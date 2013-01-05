@@ -1,4 +1,5 @@
 package mygame;
+import level.MenueState;
 import character.CharacterFactory;
 import character.Player;
 import com.jme3.app.SimpleApplication;
@@ -12,10 +13,10 @@ import level.Hell;
  */
 public class Game extends SimpleApplication {
  public BulletAppState bulletAppState;
- public Player player;
- private Heaven heaven;
- private Hell hell;
- private MenueState menue;
+ public Player player = null;
+ private Heaven heaven = null;
+ private Hell hell = null;
+ private MenueState menue = null;
 
 
 
@@ -39,13 +40,14 @@ public class Game extends SimpleApplication {
  @Override
     public void initialize(){
         super.initialize();
-        loadHeaven();
+        loadMenue();
     }
 
     private void loadHeaven() {
         //remove Hell or Menue first
         heaven = new Heaven();
         heaven.initialize(stateManager, this);
+        stateManager.detach(menue);
         stateManager.attach(heaven);
     }
     
@@ -55,11 +57,18 @@ public class Game extends SimpleApplication {
     
     
     private void loadMenue() {
+        menue = new MenueState("MainMenue");
+        menue.initialize(stateManager, this);
+        stateManager.attach(menue);
     }
 
 
     @Override
     public void update(){
+        if(heaven == null && !menue.getCharacterName().isEmpty()){
+            loadHeaven();
+        }
+  //load hell if...
         super.update();
         // do some animation
         float tpf = timer.getTimePerFrame();

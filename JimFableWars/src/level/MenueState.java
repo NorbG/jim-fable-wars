@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package level;
 
 import com.jme3.app.state.AbstractAppState;
 
@@ -13,14 +13,14 @@ import com.jme3.app.state.AbstractAppState;
  */
 public class MenueState extends AbstractAppState {
 
-    private String character;
+    private String character = "";
     
     public MenueState(String name){
         super();
     }
     
-    private String getCharacterName(){
-    return character;
+    public String getCharacterName(){
+        return character;
     }
     
     //chooseCharacter()
