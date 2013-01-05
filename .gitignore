@@ -5,3 +5,4 @@
 *.war
 *.ear
 /JimFableWars/nbproject/private/
+/JimFableWars/build/
