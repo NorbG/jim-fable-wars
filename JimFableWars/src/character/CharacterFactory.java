@@ -21,20 +21,8 @@ public class CharacterFactory {
     
     public static Player createPlayer(String type, AssetManager assetManager,  BulletAppState appState){
         //TODO attack
-    Player player = new Player(type, 2, 2);
-    createCharacter(assetManager, type, appState, player);
-    return player;
-    }
-    
-    
-    public static Opponent createOpponent(String type, AssetManager assetManager){
-        //TODO: attack
-    Opponent op = new Opponent(type, 3);
-    return op;
-    }
-    
-    private static void createCharacter(AssetManager assetManager, String type, BulletAppState appState, Player player) {
-        //load the model and the rigid body animation
+         Player player = new Player(type, 2, 2);
+         //load the model and the rigid body animation
        // Node character = (Node) assetManager.loadModel("Models/" + type + ".mesh.xml");
        Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
@@ -46,14 +34,22 @@ public class CharacterFactory {
         
        player.model = model;
        player.character = control;
-        
+       player.standAnimation = "stand";
+       player.walkAnimation = "Walk";
         //set the animations
         player.animation = player.model.getControl(AnimControl.class);
         player.channel = player.animation.createChannel();
         player.channel.addBone(player.animation.getSkeleton().getBone("uparm.right"));
         player.channel.addBone(player.animation.getSkeleton().getBone("arm.right"));
         player.channel.addBone(player.animation.getSkeleton().getBone("hand.right"));
-        
- 
+    return player;
     }
+    
+    
+    public static Opponent createOpponent(String type, AssetManager assetManager,  BulletAppState appState){
+        //TODO: attack
+    Opponent op = new Opponent(type, 3);
+    return op;
+    }
+    
 }

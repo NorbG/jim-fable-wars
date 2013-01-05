@@ -15,8 +15,8 @@ import java.awt.Point;
 public class Item {
     
     private String name;
-    private AnimControl animation;
-    private AnimChannel channel;
+    public AnimControl animation;
+    public AnimChannel channel;
     private Point location;
     
     public Item(String name, Point location){

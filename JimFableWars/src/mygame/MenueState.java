@@ -4,25 +4,26 @@
  */
 package mygame;
 
-import com.jmex.game.state.*;
+import com.jme3.app.state.AbstractAppState;
+
 
 /**
  *
  * @author Lena
  */
-public class MenueState extends BasicGameState {
+public class MenueState extends AbstractAppState {
 
     private String character;
     
     public MenueState(String name){
-        super(name);
+        super();
     }
     
     private String getCharacterName(){
     return character;
     }
     
-    //chooseCharacter
+    //chooseCharacter()
     //quitGame()
     
     

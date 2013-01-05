@@ -6,12 +6,8 @@ package character;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.animation.LoopMode;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.CharacterControl;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import java.awt.Point;
 
 /**
  *
@@ -26,6 +22,11 @@ public class Character {
     private int directAttackPoints;
     public CharacterControl character;
     public Node model;
+    public String jumpAnimation = "";
+    public String walkAnimation = "";
+    public String flyAnimation = "";
+    public String directAttackAnimation = "";
+    public String standAnimation = "";
     
     public Character(String name, int directAttackPoints){
         this.name = name;
@@ -54,11 +55,6 @@ public class Character {
         return name;
     }
 
-public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-        if (channel == this.channel) channel.setAnim("stand");
-}
- 
-public void onAnimChange(AnimControl control, AnimChannel channel, String animName) { }
 
  
  

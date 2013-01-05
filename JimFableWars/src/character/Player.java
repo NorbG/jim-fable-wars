@@ -14,6 +14,7 @@ public class Player extends Character {
     
   private State state = State.DEFAULT;
   private int distanceAttack;
+  public String distanceAttackAnimation;
   
     public Player(String name, int distanceAttack, int directAttack){
         super(name, directAttack);
