@@ -30,8 +30,8 @@ import mygame.Game;
  */
 public class LevelState extends AbstractAppState implements ActionListener, PhysicsCollisionListener, AnimEventListener {
     
-    protected LinkedList<Item> alterableItems;
-    protected LinkedList<Opponent> opponents;
+    protected LinkedList<Item> alterableItems = new LinkedList<Item>();
+    protected LinkedList<Opponent> opponents = new LinkedList<Opponent>();
     protected Game game;
     protected Node              rootNode;
     protected AssetManager      assetManager;
@@ -75,6 +75,16 @@ public class LevelState extends AbstractAppState implements ActionListener, Phys
         throw new UnsupportedOperationException("Not supported yet.");
     }
   
+    @Override
+    public void stateAttached(AppStateManager stateManager) {
+        super.stateAttached(stateManager);
+    }
+
+
+    @Override
+    public void stateDetached(AppStateManager stateManager) {
+        super.stateDetached(stateManager);
+    }
 
     
     

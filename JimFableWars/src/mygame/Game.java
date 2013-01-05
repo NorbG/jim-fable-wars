@@ -29,7 +29,7 @@ public class Game extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-         player = CharacterFactory.createPlayer("", assetManager, this.bulletAppState);  
+        player = CharacterFactory.createPlayer("Dragon", assetManager, this.bulletAppState);  
         rootNode.attachChild(player.model);
 
         

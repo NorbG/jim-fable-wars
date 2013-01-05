@@ -21,7 +21,11 @@ public class CharacterFactory {
     
     public static Player createPlayer(String type, AssetManager assetManager,  BulletAppState appState){
         //TODO attack
-         Player player = new Player(type, 2, 2);
+         Player player = null;
+         if(type.equals("Dragon")){
+          player = new Player(type, 3, 0);
+          player.adjustHealth(3);
+         }
          //load the model and the rigid body animation
        // Node character = (Node) assetManager.loadModel("Models/" + type + ".mesh.xml");
        Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
@@ -32,23 +36,46 @@ public class CharacterFactory {
         appState.getPhysicsSpace().add(control);
         control.setPhysicsLocation(new Vector3f(-140, 15, -10));
         
-       player.model = model;
-       player.character = control;
-       player.standAnimation = "stand";
-       player.walkAnimation = "Walk";
+        player.model = model;
+        player.character = control;
+        player.standAnimation = "stand";
+        player.walkAnimation = "Walk";
         //set the animations
         player.animation = player.model.getControl(AnimControl.class);
         player.channel = player.animation.createChannel();
-        player.channel.addBone(player.animation.getSkeleton().getBone("uparm.right"));
-        player.channel.addBone(player.animation.getSkeleton().getBone("arm.right"));
-        player.channel.addBone(player.animation.getSkeleton().getBone("hand.right"));
+        for(int i = 0; i < player.animation.getSkeleton().getBoneCount(); i++)
+             player.channel.addBone(player.animation.getSkeleton().getBone(i));
     return player;
     }
     
     
-    public static Opponent createOpponent(String type, AssetManager assetManager,  BulletAppState appState){
+    public static Opponent createOpponent(String type, AssetManager assetManager,  BulletAppState appState, Vector3f location){
         //TODO: attack
-    Opponent op = new Opponent(type, 3);
+    Opponent op = null;
+    op = new Opponent(type, 1);
+
+         if(type.equals("Unicorn")){
+          op.adjustHealth(8);
+         }
+         
+       Node model = (Node) assetManager.loadModel("Models/Ninja.mesh.xml");
+       model.scale(0.07f);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+        CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
+        model.addControl(control);
+  
+        appState.getPhysicsSpace().add(control);
+        control.setPhysicsLocation(location);
+        
+        op.model = model;
+        op.character = control;
+        op.standAnimation = "stand";
+        op.walkAnimation = "Walk";
+        //set the animations
+        op.animation = op.model.getControl(AnimControl.class);
+        op.channel = op.animation.createChannel();
+        for(int i = 0; i < op.animation.getSkeleton().getBoneCount(); i++)
+         op.channel.addBone(op.animation.getSkeleton().getBone(i));
     return op;
     }
     

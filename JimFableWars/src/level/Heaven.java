@@ -5,6 +5,8 @@
 package level;
 
 
+import character.CharacterFactory;
+import character.Opponent;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.scene.Node;
@@ -68,11 +70,9 @@ public class Heaven extends LevelState{
     //explosion
     ParticleEmitter effect;
     //brick wall
-    Box brick;
-    float bLength = 0.8f;
-    float bWidth = 0.4f;
-    float bHeight = 0.4f;
+
     FilterPostProcessor fpp;
+    private Opponent op;
     
     public Heaven(){
         super();
@@ -91,10 +91,15 @@ public class Heaven extends LevelState{
         createLight();
         createSky();
         createTerrain();
-        createWall();
         setupFilter();
         bulletControl();
+        //createItem
+        Item item = ItemFactory.createPowerUp("Heal", assetManager, bulletAppState, new Vector3f(-130, 15, -10));
+        this.rootNode.attachChild(item.geometry);
         
+        op = CharacterFactory.createOpponent("Unicorn", assetManager, this.bulletAppState, new Vector3f(-150, 15, -10));  
+        rootNode.attachChild(op.model);
+        this.opponents.add(op);
       
   }
     
@@ -128,34 +133,7 @@ public class Heaven extends LevelState{
         fpp.addFilter(bloom);
         viewPort.addProcessor(fpp);
     }
-        
-         private void createWall() {
-        float xOff = -144;
-        float zOff = -40;
-        float startpt = bLength / 4 - xOff;
-        float height = 6.1f;
-        brick = new Box(Vector3f.ZERO, bLength, bHeight, bWidth);
-        brick.scaleTextureCoordinates(new Vector2f(1f, .5f));
-        for (int j = 0; j < 15; j++) {
-            for (int i = 0; i < 4; i++) {
-                Vector3f vt = new Vector3f(i * bLength * 2 + startpt, bHeight + height, zOff);
-                addBrick(vt);
-            }
-            startpt = -startpt;
-            height += 1.01f * bHeight;
-        }
-    }
 
-         
-    private void addBrick(Vector3f ori) {
-        Geometry reBoxg = new Geometry("brick", brick);
-        reBoxg.setMaterial(matBullet);
-        reBoxg.setLocalTranslation(ori);
-        reBoxg.addControl(new RigidBodyControl(1.5f));
-        reBoxg.setShadowMode(ShadowMode.CastAndReceive);
-        this.rootNode.attachChild(reBoxg);
-        bulletAppState.getPhysicsSpace().add(reBoxg);
-    }
 
 
     private void prepareBullet() {

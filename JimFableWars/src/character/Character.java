@@ -51,6 +51,10 @@ public class Character {
         health += adjustement;
     }
     
+    public int getHealth(){
+        return this.health;
+    }
+    
     public String getName(){
         return name;
     }

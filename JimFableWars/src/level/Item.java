@@ -6,7 +6,8 @@ package level;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import java.awt.Point;
+import com.jme3.scene.Geometry;
+
 
 /**
  *
@@ -17,11 +18,10 @@ public class Item {
     private String name;
     public AnimControl animation;
     public AnimChannel channel;
-    private Point location;
+    public Geometry geometry;
     
-    public Item(String name, Point location){
+    public Item(String name){
         this.name = name;
-        this.location = location;
     }
     
     public void activate(){}
