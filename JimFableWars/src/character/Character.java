@@ -7,6 +7,7 @@ package character;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Node;
 
 /**
@@ -20,7 +21,7 @@ public class Character {
     private int health;
     private String name;
     private int directAttackPoints;
-    public CharacterControl character;
+    public CharacterControl character = null;
     public Node model;
     public String jumpAnimation = "";
     public String walkAnimation = "";

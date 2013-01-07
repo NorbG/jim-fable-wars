@@ -67,11 +67,13 @@ public class Game extends SimpleApplication {
 
     @Override
     public void update(){
-        if(heaven == null)// && !menue.getCharacterName().isEmpty()){
+        super.update();
+        if(heaven == null){// && !menue.getCharacterName().isEmpty()){
             loadHeaven();
+        }
        // }
   //load hell if...
-        super.update();
+        
         // do some animation
         float tpf = timer.getTimePerFrame();
         stateManager.update(tpf);

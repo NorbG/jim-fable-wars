@@ -32,14 +32,7 @@ import java.awt.Point;
  */
 public class Heaven extends LevelState implements ActionListener, PhysicsCollisionListener, AnimEventListener {
 
-    private SimpleApplication app;
-    private Node rootNode;
-    private AssetManager assetManager;
-    private AppStateManager stateManager;
-    private InputManager inputManager;
-    private ViewPort viewPort;
-    private BulletAppState bulletAppState;
-    private Player player;
+
 
     public Heaven() {
         super();
@@ -51,16 +44,10 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-        this.app = (Game) app; // can cast Application to something more specific
-        this.rootNode = this.app.getRootNode();
-        this.assetManager = this.app.getAssetManager();
-        this.stateManager = this.app.getStateManager();
-        this.inputManager = this.app.getInputManager();
-        this.viewPort = this.app.getViewPort();
-        this.bulletAppState = this.stateManager.getState(BulletAppState.class);
-        this.player = ((Game) app).player;
+        super.initialize(stateManager, app);
 
         createLevel();
+        //player.model.setLocalTranslation(0, 4, 0);
         //setupKeys();
         //prepareBullet();
         //prepareEffect();
@@ -78,7 +65,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 
     @Override
     public void update(float tpf) {
-        //  rootNode.updateLogicalState(tpf);
+        rootNode.updateLogicalState(tpf);
+        rootNode.updateGeometricState();
     }
 
     private void createLevel() {
@@ -155,7 +143,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         // sechster Gegner
         rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 68, 0), bulletAppState, assetManager).model);
 
-
+        
         DirectionalLight sun = new DirectionalLight();
         sun.setColor(ColorRGBA.White);
         sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());

@@ -64,7 +64,6 @@ public class ItemFactory {
                 break;
         }
         
-
         cloud.model.setLocalTranslation(location.x, location.y, 0);
         cloud.model.addControl(cloudControl);
         appState.getPhysicsSpace().add(cloud.model);
