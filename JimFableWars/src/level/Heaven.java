@@ -4,363 +4,177 @@
  */
 package level;
 
-
-import character.CharacterFactory;
-import character.Opponent;
+import Helper.Constants;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetManager;
+import com.jme3.input.InputManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import mygame.Game;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.animation.LoopMode;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh.Type;
-import com.jme3.effect.shapes.EmitterSphereShape;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.light.DirectionalLight;
-import com.jme3.math.Vector2f;
-import com.jme3.post.filters.BloomFilter;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.scene.shape.Sphere.TextureMode;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.texture.Texture;
-import com.jme3.texture.Texture.WrapMode;
-import com.jme3.util.SkyFactory;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
+import character.Player;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.input.controls.ActionListener;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.renderer.Camera;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
-import com.jme3.terrain.geomipmap.TerrainLodControl;
-import com.jme3.terrain.geomipmap.TerrainQuad;
-import java.util.ArrayList;
-import java.util.List;
-import jme3test.bullet.BombControl;
+import java.awt.Point;
 
 /**
  *
  * @author Lena
  */
-public class Heaven extends LevelState{
-    
- //   Node model;
-    //temp vectors
-    //terrain
-    TerrainQuad terrain;
-    RigidBodyControl terrainPhysicsNode;
-    //Materials
-    Material matRock;
-    Material matBullet;
-    float airTime = 0;
-    //camera
-    boolean left = false, right = false, up = false;
-    //bullet
-    Sphere bullet;
-    SphereCollisionShape bulletCollisionShape;
-    //explosion
-    ParticleEmitter effect;
-    //brick wall
+public class Heaven extends LevelState implements ActionListener, PhysicsCollisionListener, AnimEventListener {
 
-    FilterPostProcessor fpp;
-    private Opponent op;
-    
-    public Heaven(){
+    private SimpleApplication app;
+    private Node rootNode;
+    private AssetManager assetManager;
+    private AppStateManager stateManager;
+    private InputManager inputManager;
+    private ViewPort viewPort;
+    private BulletAppState bulletAppState;
+    private Player player;
+
+    public Heaven() {
         super();
     }
-    
-    public Node getRootNode(){
-    return this.rootNode;
+
+    public Node getRootNode() {
+        return this.rootNode;
     }
-    
+
     @Override
-  public void initialize(AppStateManager stateManager, Application app) {
-    super.initialize(stateManager, app);
-        setupKeys();
-        prepareBullet();
-        prepareEffect();
-        createLight();
-        createSky();
-        createTerrain();
-        setupFilter();
-        bulletControl();
-        //createItem
-        Item item = ItemFactory.createPowerUp("Heal", assetManager, bulletAppState, new Vector3f(-130, 15, -10));
-        this.rootNode.attachChild(item.geometry);
-        
-        op = CharacterFactory.createOpponent("Unicorn", assetManager, this.bulletAppState, new Vector3f(-150, 15, -10));  
-        rootNode.attachChild(op.model);
-        this.opponents.add(op);
-      
-  }
-    
-    public void moveOpponents(){
+    public void initialize(AppStateManager stateManager, Application app) {
+        this.app = (Game) app; // can cast Application to something more specific
+        this.rootNode = this.app.getRootNode();
+        this.assetManager = this.app.getAssetManager();
+        this.stateManager = this.app.getStateManager();
+        this.inputManager = this.app.getInputManager();
+        this.viewPort = this.app.getViewPort();
+        this.bulletAppState = this.stateManager.getState(BulletAppState.class);
+        this.player = ((Game) app).player;
+
+        createLevel();
+        //setupKeys();
+        //prepareBullet();
+        //prepareEffect();
+        //createLight();
+        //createSky();
+        //createTerrain();
+        //createWall();
+        //createCharacter();
+        //setupChaseCamera();
+        //setupFilter();
+        //bulletControl();
+
+
     }
-    
-    public void attackpPlayer(){
-    }
-    
-
-    
-    private void setupKeys() {
-        inputManager.addMapping("wireframe", new KeyTrigger(KeyInput.KEY_T));
-        inputManager.addListener(this, "wireframe");
-        inputManager.addMapping("CharLeft", new KeyTrigger(KeyInput.KEY_A));
-        inputManager.addMapping("CharRight", new KeyTrigger(KeyInput.KEY_D));
-        inputManager.addMapping("CharUp", new KeyTrigger(KeyInput.KEY_W));
-        inputManager.addMapping("CharDirectAttack", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addMapping("CharDistanceAttack", new KeyTrigger(KeyInput.KEY_SPACE));
-        inputManager.addListener(this, "CharLeft");
-        inputManager.addListener(this, "CharRight");
-        inputManager.addListener(this, "CharUp");
-        inputManager.addListener(this, "CharDirectAttack");
-        inputManager.addListener(this, "CharDistanceAttack");
-    }
-
-    
-        private void setupFilter() {
-        fpp = new FilterPostProcessor(assetManager);
-        BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
-        fpp.addFilter(bloom);
-        viewPort.addProcessor(fpp);
-    }
-
-
-
-    private void prepareBullet() {
-        bullet = new Sphere(32, 32, 0.4f, true, false);
-        bullet.setTextureMode(TextureMode.Projected);
-        bulletCollisionShape = new SphereCollisionShape(0.4f);
-        matBullet = new Material(this.game.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        matBullet.setColor("Color", ColorRGBA.Green);
-        matBullet.setColor("GlowColor", ColorRGBA.Green);
-        bulletAppState.getPhysicsSpace().addCollisionListener(this);
-    }
-
-
-    private void prepareEffect() {
-        int COUNT_FACTOR = 1;
-        float COUNT_FACTOR_F = 1f;
-        effect = new ParticleEmitter("Flame", Type.Triangle, 32 * COUNT_FACTOR);
-        effect.setSelectRandomImage(true);
-        effect.setStartColor(new ColorRGBA(1f, 0.4f, 0.05f, (float) (1f / COUNT_FACTOR_F)));
-        effect.setEndColor(new ColorRGBA(.4f, .22f, .12f, 0f));
-        effect.setStartSize(1.3f);
-        effect.setEndSize(2f);
-        effect.setShape(new EmitterSphereShape(Vector3f.ZERO, 1f));
-        effect.setParticlesPerSec(0);
-        effect.setGravity(0, -5, 0);
-        effect.setLowLife(.4f);
-        effect.setHighLife(.5f);
-        effect.setInitialVelocity(new Vector3f(0, 7, 0));
-        effect.setVelocityVariation(1f);
-        effect.setImagesX(2);
-        effect.setImagesY(2);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
-        effect.setMaterial(mat);
-//        effect.setLocalScale(100);
-        rootNode.attachChild(effect);
-    }
-
-
-    private void createLight() {
-        Vector3f direction = new Vector3f(-0.1f, -0.7f, -1).normalizeLocal();
-        DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(direction);
-        dl.setColor(new ColorRGBA(1f, 1f, 1f, 1.0f));
-        rootNode.addLight(dl);
-    }
-
-
-    private void createSky() {
-        rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
-    }
-
-
-    private void createTerrain() {
-        matRock = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
-        matRock.setBoolean("useTriPlanarMapping", false);
-        matRock.setBoolean("WardIso", true);
-        matRock.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
-        Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
-        Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
-        grass.setWrap(WrapMode.Repeat);
-        matRock.setTexture("DiffuseMap", grass);
-        matRock.setFloat("DiffuseMap_0_scale", 64);
-        Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
-        dirt.setWrap(WrapMode.Repeat);
-        matRock.setTexture("DiffuseMap_1", dirt);
-        matRock.setFloat("DiffuseMap_1_scale", 16);
-        Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
-        rock.setWrap(WrapMode.Repeat);
-        matRock.setTexture("DiffuseMap_2", rock);
-        matRock.setFloat("DiffuseMap_2_scale", 128);
-        Texture normalMap0 = assetManager.loadTexture("Textures/Terrain/splat/grass_normal.jpg");
-        normalMap0.setWrap(WrapMode.Repeat);
-        Texture normalMap1 = assetManager.loadTexture("Textures/Terrain/splat/dirt_normal.png");
-        normalMap1.setWrap(WrapMode.Repeat);
-        Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
-        normalMap2.setWrap(WrapMode.Repeat);
-        matRock.setTexture("NormalMap", normalMap0);
-        matRock.setTexture("NormalMap_1", normalMap2);
-        matRock.setTexture("NormalMap_2", normalMap2);
-
-
-        AbstractHeightMap heightmap = null;
-        try {
-            heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
-            heightmap.load();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-        List<Camera> cameras = new ArrayList<Camera>();
-        cameras.add(this.game.getCamera());
-        TerrainLodControl control = new TerrainLodControl(terrain, cameras);
-        terrain.addControl(control);
-        terrain.setMaterial(matRock);
-        terrain.setLocalScale(new Vector3f(2, 2, 2));
-
-
-        terrainPhysicsNode = new RigidBodyControl(CollisionShapeFactory.createMeshShape(terrain), 0);
-        terrain.addControl(terrainPhysicsNode);
-        rootNode.attachChild(terrain);
-        bulletAppState.getPhysicsSpace().add(terrainPhysicsNode);
-    }
-
-
-
-
-
-
 
     @Override
     public void update(float tpf) {
-      //  rootNode.updateLogicalState(tpf);
-        rootNode.updateGeometricState();
-        Vector3f camDir = this.game.getCamera().getDirection().clone().multLocal(0.1f);
-        Vector3f camLeft = this.game.getCamera().getLeft().clone().multLocal(0.1f);
-        camDir.y = 0;
-        camLeft.y = 0;
-        walkDirection.set(0, 0, 0);
-        if (left) {
-            walkDirection.addLocal(camLeft);
-        }
-        if (right) {
-            walkDirection.addLocal(camLeft.negate());
-        }
-        if (up) {
-            walkDirection.addLocal(camDir);
-        }
-        
-        if (!player.character.onGround()) {
-            airTime = airTime + tpf;
-        } else {
-            airTime = 0;
-        }
-        if (walkDirection.length() == 0) {
-            if (!player.standAnimation.equals(player.channel.getAnimationName())) {
-                player.channel.setAnim(player.standAnimation, 1f);
-            }
-        } else {
-            player.character.setViewDirection(walkDirection);
-            if (airTime > .3f) {
-                if (!player.standAnimation.equals(player.channel.getAnimationName())) {
-                    player.channel.setAnim(player.standAnimation);
-                }
-            } 
-            else if ((!player.walkAnimation.isEmpty()) && !(player.walkAnimation.equals(player.channel.getAnimationName())))
-                    player.channel.setAnim(player.walkAnimation, 0.7f);
-            else if ((!player.flyAnimation.isEmpty()) && !(player.flyAnimation.equals(player.channel.getAnimationName())))
-                   player.channel.setAnim(player.flyAnimation, 0.7f);
-              }
-        player.character.setWalkDirection(walkDirection);
+        //  rootNode.updateLogicalState(tpf);
     }
 
+    private void createLevel() {
+        // Level 0 //
+        //Start
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(0, 0, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(6, 0, 0), bulletAppState, assetManager).model);
 
-    @Override
-    public void onAction(String binding, boolean value, float tpf) {
-        if (binding.equals("CharLeft")) {
-            if (value) {
-                left = true;
-            } else {
-                left = false;
-            }
-        } 
-        if (binding.equals("CharRight")) {
-            if (value) {
-                right = true;
-            } else {
-                right = false;
-            }
-        } 
-        if (binding.equals("CharUp")) {
-            player.character.jump();
-        } 
-        if (binding.equals("CharDistanceAttack")) {
-            player.distanceAttack();
-        } else if (binding.equals("CharDirectAttack")) {
-            player.directAttack(true);
-        }
+        // fallende Wolken
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 0, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(12, 0, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(15, 0, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(18, 0, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(21, 0, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(24, 0, 0), bulletAppState, assetManager).model);
+
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(31, 3, 0), bulletAppState, assetManager).model);
+        // erster Gegner
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(45, 1, 0), bulletAppState, assetManager).model);
+        // bewegende Wolke nach oben/unten
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(56, 5, 0), bulletAppState, assetManager).model);
+        // item
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(50, 18, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(62, 13, 0), bulletAppState, assetManager).model);
+        // zweiter Gegner
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(73, 6, 0), bulletAppState, assetManager).model);
+
+        // Treppe
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(80, 9, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(85, 12, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 15, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(95, 18, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(100, 21, 0), bulletAppState, assetManager).model);
+
+        // geheime PLatform mit Gegner
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(112, 21, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(98, 2, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(112, 2, 0), bulletAppState, assetManager).model);
+        // bewegende Wolke nach oben/unten mit Item
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(124, 2, 0), bulletAppState, assetManager).model);
+
+        // Level 1 //
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(123, 27, 0), bulletAppState, assetManager).model);
+        // dritter Gegner
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(116, 30, 0), bulletAppState, assetManager).model);
+        // bewegende Wolken oben/unten
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(107, 32, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(98, 32, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(89, 32, 0), bulletAppState, assetManager).model);
+
+        // bewegende Wolken links/rechts
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(82, 36, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(78, 42, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(74, 48, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(70, 54, 0), bulletAppState, assetManager).model);
+
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(40, 54, 0), bulletAppState, assetManager).model);
+        // bewegende Wolke oben/unten
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(30, 54, 0), bulletAppState, assetManager).model);
+        // vierter Gegner
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(15, 20, 0), bulletAppState, assetManager).model);
+
+        // bewegende Wolke oben/unten mit Todesternhinderniss
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(5, 20, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 34, 0), bulletAppState, assetManager).model);
+        // item
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(14, 38, 0), bulletAppState, assetManager).model);
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 42, 0), bulletAppState, assetManager).model);
+        // bewegende Wolke links/rechts
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(5, 64, 0), bulletAppState, assetManager).model);
+        // viele Todessterne
+        // mit Todesstern und fünftem Gegner
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(80, 64, 0), bulletAppState, assetManager).model);
+        // sechster Gegner
+        rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 68, 0), bulletAppState, assetManager).model);
+
+
+        DirectionalLight sun = new DirectionalLight();
+        sun.setColor(ColorRGBA.White);
+        sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
+        rootNode.addLight(sun);
     }
 
-
-    private void bulletControl() {
-        player.channel.setAnim("Dodge", 0.1f);
-        player.channel.setLoopMode(LoopMode.DontLoop);
-        Geometry bulletg = new Geometry("bullet", bullet);
-        bulletg.setMaterial(matBullet);
-        bulletg.setShadowMode(ShadowMode.CastAndReceive);
-        bulletg.setLocalTranslation(player.character.getPhysicsLocation().add(this.game.getCamera().getDirection().mult(5)));
-        RigidBodyControl bulletControl = new BombControl(bulletCollisionShape, 1);
-        bulletControl.setCcdMotionThreshold(0.1f);
-        bulletControl.setLinearVelocity(this.game.getCamera().getDirection().mult(80));
-        bulletg.addControl(bulletControl);
-        rootNode.attachChild(bulletg);
-        bulletAppState.getPhysicsSpace().add(bulletControl);
+    public void onAction(String name, boolean isPressed, float tpf) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-        public void collision(PhysicsCollisionEvent event) {
-        if (event.getObjectA() instanceof BombControl) {
-            final Spatial node = event.getNodeA();
-            effect.killAllParticles();
-            effect.setLocalTranslation(node.getLocalTranslation());
-            effect.emitAllParticles();
-        } else if (event.getObjectB() instanceof BombControl) {
-            final Spatial node = event.getNodeB();
-            effect.killAllParticles();
-            effect.setLocalTranslation(node.getLocalTranslation());
-            effect.emitAllParticles();
-        }
+    public void collision(PhysicsCollisionEvent event) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
-    @Override
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-        if (channel == player.channel) {
-            channel.setAnim("stand");
-        }
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-    
 
-
-    @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-      
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

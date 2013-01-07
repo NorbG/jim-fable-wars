@@ -22,11 +22,13 @@ public class Game extends SimpleApplication {
 
     public static void main(String[] args) {
         Game app = new Game();
+        app.setShowSettings(false);
         app.start();
     }
 
     @Override
     public void simpleInitApp() {
+        flyCam.setMoveSpeed(10);
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
@@ -65,9 +67,9 @@ public class Game extends SimpleApplication {
 
     @Override
     public void update(){
-        if(heaven == null && !menue.getCharacterName().isEmpty()){
+        if(heaven == null)// && !menue.getCharacterName().isEmpty()){
             loadHeaven();
-        }
+       // }
   //load hell if...
         super.update();
         // do some animation

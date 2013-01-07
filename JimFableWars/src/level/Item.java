@@ -6,7 +6,7 @@ package level;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 
 
 /**
@@ -18,7 +18,7 @@ public class Item {
     private String name;
     public AnimControl animation;
     public AnimChannel channel;
-    public Geometry geometry;
+    public Node model;
     
     public Item(String name){
         this.name = name;
