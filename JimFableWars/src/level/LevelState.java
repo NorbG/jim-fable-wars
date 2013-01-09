@@ -21,6 +21,8 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jmex.game.state.GameStateManager;
+import java.util.HashMap;
 import java.util.LinkedList;
 import mygame.Game;
 
@@ -55,8 +57,8 @@ public class LevelState extends AbstractAppState implements ActionListener, Phys
     this.bulletAppState = this.stateManager.getState(BulletAppState.class);
     this.player       = ((Game)app).player;
     this.game.getFlyByCamera().setEnabled(false);
-    chaseCam = new ChaseCamera(this.game.getCamera(), player.model, inputManager);
-    bulletAppState.getPhysicsSpace().add(player.character);
+    this.chaseCam = new ChaseCamera(this.game.getCamera(), player.model, inputManager);
+    this.bulletAppState.getPhysicsSpace().add(player.character);
     }
 
     public void onAction(String name, boolean isPressed, float tpf) {

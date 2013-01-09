@@ -9,14 +9,21 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.material.MatParam;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.shader.VarType;
+import com.jme3.texture.Texture;
+import java.util.Collection;
 
 /**
  *
@@ -64,6 +71,60 @@ public class ItemFactory {
                 break;
         }
         
+        /*
+         //Ã„nderungen an der Texture
+         */
+        
+            Node tmp = (Node) cloud.model.getChild(0);
+        Geometry submesh = null;
+        
+        while (submesh == null && tmp.getChildren().size() > 0){
+            if(tmp.getChild(0) instanceof Geometry){
+                submesh = (Geometry) tmp.getChild(0);
+               // submesh.setShadowMode(ShadowMode.CastAndReceive);
+            }
+            else
+                tmp = (Node) tmp.getChild(0);
+        }
+        
+        /*
+         * //Ã„nderungen am Material
+        Node tmp = (Node) cloud.model.getChild(0);
+        Geometry submesh = null;
+        
+        while (submesh == null && tmp.getChildren().size() > 0){
+            if(tmp.getChild(0) instanceof Geometry){
+                submesh = (Geometry) tmp.getChild(0);
+               // submesh.setShadowMode(ShadowMode.CastAndReceive);
+            }
+            else
+                tmp = (Node) tmp.getChild(0);
+        }
+        
+         Material cloudMaterial =  submesh.getMaterial();
+         //Ambient
+         //Specular
+         //Diffuse
+         //cloudMaterial.setFloat("m_Shininess", 100f);
+         cloudMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);  // activate transparency
+         cloudMaterial.setVector4("Diffuse", new Vector4f(0.75756456f, 0.649994f, 0.92508994f, 0.3f));
+         cloudMaterial.setTransparent(true);
+         cloudMaterial.setBoolean("UseMaterialColors",false);
+         
+         cloudMaterial.setColor("GlowColor", ColorRGBA.Green);
+        
+      //  cloudMaterial.setParam("Transparency", VarType.Float, 0.7f);
+     //   cloudMaterial.setParam("WardIso", VarType.Boolean, true);
+//Boolean Minnaert : false
+//Boolean WardIso : false
+        
+        
+        Collection<MatParam> list = cloudMaterial.getParams();
+        System.out.println("--------------------------");
+        for(MatParam t : list){
+            System.out.println(t);
+        }
+  */
         cloud.model.setLocalTranslation(location.x, location.y, 0);
         cloud.model.addControl(cloudControl);
         appState.getPhysicsSpace().add(cloud.model);

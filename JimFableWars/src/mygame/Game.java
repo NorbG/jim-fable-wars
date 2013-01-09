@@ -3,9 +3,11 @@ import level.MenueState;
 import character.CharacterFactory;
 import character.Player;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 import level.Heaven;
 import level.Hell;
+import level.LevelState;
 
 /**
  * test
@@ -32,7 +34,7 @@ public class Game extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-        player = CharacterFactory.createPlayer("Dragon", assetManager, this.bulletAppState);  
+        player = CharacterFactory.createPlayer("Dragon", assetManager);  
         rootNode.attachChild(player.model);
 
         
@@ -49,19 +51,28 @@ public class Game extends SimpleApplication {
         //remove Hell or Menue first
         heaven = new Heaven();
         heaven.initialize(stateManager, this);
-        stateManager.detach(menue);
-        stateManager.attach(heaven);
+        if(stateManager.hasState(menue))
+          detachState(menue);
+        attachState(heaven);
     }
     
     
     private void loadHell() {
     }
     
+    public void attachState(AppState level){
+        stateManager.attach(level);
+    }
+    
+        public void detachState(AppState level){
+        stateManager.detach(level);
+    }
+    
     
     private void loadMenue() {
         menue = new MenueState("MainMenue");
         menue.initialize(stateManager, this);
-        stateManager.attach(menue);
+        attachState(menue);
     }
 
 
@@ -75,12 +86,11 @@ public class Game extends SimpleApplication {
   //load hell if...
         
         // do some animation
-        float tpf = timer.getTimePerFrame();
+    /*    float tpf = timer.getTimePerFrame();
         stateManager.update(tpf);
         stateManager.render(renderManager);
         // render the viewports
-        renderManager.render(tpf, context.isRenderable());
+        renderManager.render(tpf, context.isRenderable());*/
     }    
     
 }
-

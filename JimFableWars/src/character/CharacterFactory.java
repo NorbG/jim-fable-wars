@@ -20,7 +20,7 @@ import com.jme3.scene.Node;
  */
 public class CharacterFactory {
 
-    public static Player createPlayer(String type, AssetManager assetManager, BulletAppState appState) {
+    public static Player createPlayer(String type, AssetManager assetManager) {
         //TODO attack
         Player player = null;
         if (type.equals("Dragon")) {
@@ -32,14 +32,13 @@ public class CharacterFactory {
         Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
-        control.setPhysicsLocation(new Vector3f(0, 5, 0));
         // control.setPhysicsSpace(appState.getPhysicsSpace()); 
 
         player.model = model;
         player.model.addControl(control);
-        //player.model.setLocalTranslation(0, 10, 0);
-        appState.getPhysicsSpace().add(control);
-
+        
+      //  player.model.setLocalTranslation(0, 10, 0);
+        control.setPhysicsLocation(new Vector3f(0, 10, 0));
 
 
 
@@ -55,7 +54,7 @@ public class CharacterFactory {
         return player;
     }
 
-    public static Opponent createOpponent(String type, AssetManager assetManager, BulletAppState appState, Vector3f location) {
+    public static Opponent createOpponent(String type, AssetManager assetManager, Vector3f location) {
         //TODO: attack
         Opponent op = null;
         op = new Opponent(type, 1);
@@ -70,7 +69,6 @@ public class CharacterFactory {
         CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
         model.addControl(control);
 
-        appState.getPhysicsSpace().add(control);
         control.setPhysicsLocation(location);
 
         op.model = model;
