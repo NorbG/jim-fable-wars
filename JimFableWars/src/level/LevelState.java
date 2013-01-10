@@ -49,7 +49,8 @@ public class LevelState extends AbstractAppState implements ActionListener, Phys
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
     this.game = (Game) app; // can cast Application to something more specific
-    this.rootNode     = this.game.getRootNode();
+    //this.rootNode     = this.game.getRootNode();
+    this.rootNode     = new Node();
     this.assetManager = this.game.getAssetManager();
     this.stateManager = this.game.getStateManager();
     this.inputManager = this.game.getInputManager();
@@ -77,16 +78,6 @@ public class LevelState extends AbstractAppState implements ActionListener, Phys
         throw new UnsupportedOperationException("Not supported yet.");
     }
   
-    @Override
-    public void stateAttached(AppStateManager stateManager) {
-        super.stateAttached(stateManager);
-    }
-
-
-    @Override
-    public void stateDetached(AppStateManager stateManager) {
-        super.stateDetached(stateManager);
-    }
 
     
     
