@@ -13,6 +13,7 @@ import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import mygame.Game;
 
 /**
  *
@@ -20,19 +21,19 @@ import com.jme3.scene.Node;
  */
 public class CharacterFactory {
 
-    public static Player createPlayer(String type, AssetManager assetManager) {
+    public static Player createPlayer(Game app, String type, AssetManager assetManager) {
         //TODO attack
         Player player = null;
         if (type.equals("Dragon")) {
-            player = new Player(type, 3, 0);
+            player = new Player(app, type, 3, 0);
             player.adjustHealth(3);
         }
         //load the model and the rigid body animation
         // Node character = (Node) assetManager.loadModel("Models/" + type + ".mesh.xml");
-        Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
+        /*Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
-        // control.setPhysicsSpace(appState.getPhysicsSpace()); 
+        // control.setPhysicsSpace(appState.getPhysicsSpace());
 
         player.model = model;
         player.model.addControl(control);
@@ -50,7 +51,7 @@ public class CharacterFactory {
         player.channel = player.animation.createChannel();
         //  for(int i = 0; i < player.animation.getSkeleton().getBoneCount(); i++){
         //      player.channel.addBone(player.animation.getSkeleton().getBone(i));
-        //}
+        //}*/
         return player;
     }
 

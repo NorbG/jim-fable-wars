@@ -1,4 +1,5 @@
 package mygame;
+
 import level.MenueState;
 import character.CharacterFactory;
 import character.Player;
@@ -7,20 +8,20 @@ import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 import level.Heaven;
 import level.Hell;
-import level.LevelState;
 
 /**
  * test
+ *
  * @author normenhansen
  */
 public class Game extends SimpleApplication {
- public BulletAppState bulletAppState;
- public Player player = null;
- private Heaven heaven = null;
- private Hell hell = null;
- private MenueState menue = null;
 
-
+    public BulletAppState bulletAppState;
+    public Player player = null;
+    private Heaven heaven = null;
+    private Hell hell = null;
+    private MenueState menue = null;
+    private Camera camera;
 
     public static void main(String[] args) {
         Game app = new Game();
@@ -34,15 +35,15 @@ public class Game extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-        player = CharacterFactory.createPlayer("Dragon", assetManager);  
-        rootNode.attachChild(player.model);
+        player = CharacterFactory.createPlayer(this, "Dragon", assetManager);
+        //rootNode.attachChild(player.model);
 
-        
-   // createHeaven();
+
+        // createHeaven();
     }
 
- @Override
-    public void initialize(){
+    @Override
+    public void initialize() {
         super.initialize();
         loadMenue();
     }
@@ -51,46 +52,57 @@ public class Game extends SimpleApplication {
         //remove Hell or Menue first
         heaven = new Heaven();
         heaven.initialize(stateManager, this);
-        if(stateManager.hasState(menue))
-          detachState(menue);
+        if (stateManager.hasState(menue)) {
+            detachState(menue);
+        }
         attachState(heaven);
+
+        camera = new Camera();
+        stateManager.attach(camera);
     }
-    
-    
+
     private void loadHell() {
     }
-    
-    public void attachState(AppState level){
+
+    public void attachState(AppState level) {
         stateManager.attach(level);
     }
-    
-        public void detachState(AppState level){
+
+    public void detachState(AppState level) {
         stateManager.detach(level);
     }
-    
-    
+
     private void loadMenue() {
         menue = new MenueState("MainMenue");
         menue.initialize(stateManager, this);
         attachState(menue);
     }
 
-
     @Override
-    public void update(){
+    public void update() {
         super.update();
-        if(heaven == null){// && !menue.getCharacterName().isEmpty()){
+        if (heaven == null) {// && !menue.getCharacterName().isEmpty()){
             loadHeaven();
         }
-       // }
-  //load hell if...
-        
+
+
+        // }
+        //load hell if...
+
         // do some animation
     /*    float tpf = timer.getTimePerFrame();
-        stateManager.update(tpf);
-        stateManager.render(renderManager);
-        // render the viewports
-        renderManager.render(tpf, context.isRenderable());*/
-    }    
-    
+         stateManager.update(tpf);
+         stateManager.render(renderManager);
+         // render the viewports
+         renderManager.render(tpf, context.isRenderable());*/
+    }
+
+    @Override
+    public void simpleUpdate(float tpf) {
+        player.update(tpf);
+    }
+
+    public BulletAppState getBulletAppState() {
+        return bulletAppState;
+    }
 }
