@@ -22,10 +22,11 @@ public class Game extends SimpleApplication {
     private Hell hell = null;
     private MenueState menue = null;
     private Camera camera;
+    private GUIManager hudManager;
 
     public static void main(String[] args) {
         Game app = new Game();
-        app.setShowSettings(false);
+        app.setShowSettings(true);
         app.start();
     }
 
@@ -37,7 +38,7 @@ public class Game extends SimpleApplication {
         stateManager.attach(bulletAppState);
         player = CharacterFactory.createPlayer(this, "Dragon", assetManager);
         //rootNode.attachChild(player.model);
-
+        hudManager = new GUIManager(this);
 
         // createHeaven();
     }
