@@ -51,7 +51,7 @@ public class Game extends SimpleApplication {
         camera = new Camera();
         stateManager.attach(camera);
         
-        rootNode.attachChild(CharacterFactory.createOpponent("", assetManager, new Vector3f(5, 10, 0)).model);
+        rootNode.attachChild(CharacterFactory.createOpponent("ENEMY", assetManager, new Vector3f(5, 10, 0), getBulletAppState()).model);
     }
 
     public void attachState(AppState level) {
