@@ -5,6 +5,7 @@
 package level;
 
 import Helper.Constants;
+import character.Player;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.scene.Node;
@@ -20,6 +21,8 @@ import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import de.lessvoid.nifty.elements.render.PanelRenderer;
+import de.lessvoid.nifty.tools.Color;
 import java.awt.Point;
 
 /**
@@ -190,18 +193,21 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         game.getInputManager().addMapping("MeleeAttack", new KeyTrigger(KeyInput.KEY_D));
         game.getInputManager().addMapping("Escape", new KeyTrigger(KeyInput.KEY_ESCAPE));
 
-        game.getInputManager().addListener(analogListener, new String[]{"Left", "Right", "Jump", "RangeAttack", "MeleeAttack", "Escape"});
+        game.getInputManager().addListener(analogListener, new String[]{"Left", "Right", "Jump"});
+        game.getInputManager().addListener(actionListener, new String[]{"RangeAttack", "MeleeAttack", "Escape"});
     }
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             // move left
             if (name.equals("Left")) {
-                player.moveLeft = true;
+                player.currentDirection = Player.Direction.LEFT;
+                player.isMoving = true;
             }
 
             // move right
             if (name.equals("Right")) {
-                player.moveRight = true;
+                player.currentDirection = Player.Direction.RIGHT;
+                player.isMoving = true;
             }
 
             // jump
@@ -211,15 +217,19 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
                     player.jumping = true;
                 }
             }
-
-            // range attack
-            if (name.equals("RangeAttack")) {
-                player.handleRangedAttack();
+        }
+    };
+    
+    private ActionListener actionListener = new ActionListener() {
+        public void onAction(String name, boolean keyPressed, float tpf) {
+            if (name.equals("RangeAttack") && keyPressed) {
+                game.attachState(player.handleRangedAttack());
             }
-
-            // melee attack
-            if (name.equals("MeleeAttack")) {
-                player.handleMeleeAttack();
+            
+            if (name.equals("MeleeAttack") && keyPressed) {
+            }
+            
+            if (name.equals("Escape") && keyPressed) {
             }
         }
     };
