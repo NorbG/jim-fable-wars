@@ -55,7 +55,7 @@ public class LevelState extends AbstractAppState implements ActionListener, Phys
     this.viewPort     = this.game.getViewPort();
     this.bulletAppState = this.stateManager.getState(BulletAppState.class);
     this.player       = ((Game)app).player;
-    //this.game.getFlyByCamera().setEnabled(false);
+    this.game.getFlyByCamera().setEnabled(false);
     //this.chaseCam = new ChaseCamera(this.game.getCamera(), player.model, inputManager);
     //this.bulletAppState.getPhysicsSpace().add(player.character);
     }
