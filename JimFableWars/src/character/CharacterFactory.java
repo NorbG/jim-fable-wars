@@ -35,7 +35,7 @@ public class CharacterFactory {
         player.model.scale(0.3f);
         player.model.setLocalTranslation(0.f, 15.f, 0);
         
-        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1.5f, 6f, 1));
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 0.5f));
         GhostControl control = new GhostControl(collisionShape);
         player.control = control;
         player.model.addControl(control);

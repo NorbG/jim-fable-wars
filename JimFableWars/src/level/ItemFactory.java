@@ -65,6 +65,7 @@ public class ItemFactory {
             case Constants.CLOUD_MEDIUM_1v1:
                 cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_medium_1v1_low_poly.j3o");
                 cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(3, 0.5f, 1)), 0);
+                
                 break;
             case Constants.CLOUD_Long_1v1:
                 cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_long_1v1_low_Poly.j3o");
@@ -138,11 +139,15 @@ public class ItemFactory {
         return rock;
     }
     
-    public static Item createDeathStar(AssetManager assetManager,  BulletAppState appState, Vector3f location){
+    public static Item createDeathStar(Vector3f location, BulletAppState appState, AssetManager assetManager){
         Item deathstar = new Item("DeathStar");
-        deathstar.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_small_1v2_low_poly.j3o");
-        RigidBodyControl control = new RigidBodyControl(new BoxCollisionShape(new Vector3f(1.7f, 0.5f, 1)), 0);
+        deathstar.model = (Node) assetManager.loadModel("Models/Level/Heaven/starV1.j3o");
+        deathstar.model.setLocalScale(0.5f);
+        deathstar.model.setLocalTranslation(location.x, location.y, 0);
+        
+        RigidBodyControl control = new RigidBodyControl(new BoxCollisionShape(new Vector3f(1.2f, 1.4f, 1)), 0);
         deathstar.model.addControl(control);
+        appState.getPhysicsSpace().add(deathstar.model);
                 
         return deathstar;
     }

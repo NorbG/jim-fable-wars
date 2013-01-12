@@ -57,6 +57,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         
         initKeys();
         loadPartZero();
+        loadPartOne();
     }
 
     
@@ -141,7 +142,9 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         
       
        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(40, 54, 0), bulletAppState, assetManager).model);
-        // bewegende Wolke oben/unten
+       partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(35, 56, 0), bulletAppState, assetManager).model);
+       
+       // bewegende Wolke oben/unten
        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(30, 54, 0), bulletAppState, assetManager).model);
         // vierter Gegner
        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(15, 20, 0), bulletAppState, assetManager).model);
