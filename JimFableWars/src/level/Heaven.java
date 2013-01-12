@@ -52,6 +52,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.rootNode = game.getRootNode();
+        bulletAppState.getPhysicsSpace().addCollisionListener(this);
+        bulletAppState.getPhysicsSpace().add(player.control);
         
         initKeys();
         loadPartZero();
@@ -172,7 +174,16 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if ( event.getNodeA().getName().equals("player")
+                && event.getNodeB().getName().equals("Star")) {
+             System.out.println("HALLO KOLLISION!");
+             player.adjustHealth(1);
+        }
+        else if ( event.getNodeB().getName().equals("player") 
+                    && event.getNodeA().getName().equals("Star")) {
+            player.adjustHealth(1);
+        }
+       
     }
 
     @Override

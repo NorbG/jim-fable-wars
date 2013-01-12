@@ -5,6 +5,7 @@
 package character;
 
 import com.jme3.bullet.collision.PhysicsRayTestResult;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -44,6 +45,7 @@ public class Player extends Character {
     public boolean canJump = false;            // can currently jump (cannot when falling e.g.)
     public Direction currentDirection = Direction.RIGHT;
     public boolean isMoving = false;
+    public GhostControl control;
 
     public Player(String name, int distanceAttack, int directAttack) {
         super(name, directAttack);

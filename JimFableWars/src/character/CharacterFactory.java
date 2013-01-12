@@ -10,6 +10,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -33,6 +34,10 @@ public class CharacterFactory {
         player.model.setName("Player");
         player.model.scale(0.3f);
         player.model.setLocalTranslation(0.f, 15.f, 0);
+        
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1.5f, 6f, 1));
+        GhostControl control = new GhostControl(collisionShape);
+        player.control = control;
         
         
         
