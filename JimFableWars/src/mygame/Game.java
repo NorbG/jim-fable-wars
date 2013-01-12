@@ -6,6 +6,7 @@ import character.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.math.Vector3f;
 import level.Heaven;
 
 /**
@@ -47,8 +48,10 @@ public class Game extends SimpleApplication {
         }
         attachState(heaven);
 
-        //camera = new Camera();
-        //stateManager.attach(camera);
+        camera = new Camera();
+        stateManager.attach(camera);
+        
+        rootNode.attachChild(CharacterFactory.createOpponent("", assetManager, new Vector3f(5, 10, 0)).model);
     }
 
     public void attachState(AppState level) {

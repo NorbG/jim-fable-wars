@@ -4,7 +4,6 @@
  */
 package character;
 
-import com.jme3.animation.AnimControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -78,24 +77,28 @@ public class CharacterFactory {
             op.adjustHealth(8);
         }
 
-        Node model = (Node) assetManager.loadModel("Models/Ninja.mesh.xml");
-        model.scale(0.07f);
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
-        CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
-        model.addControl(control);
-
-        control.setPhysicsLocation(location);
-
+        Node model = (Node) assetManager.loadModel("Models/Character/pixyJoinedclothes.j3o");
+        model.scale(1.f);
+        
+        model.setLocalTranslation(5, 5, 0);
         op.model = model;
-        op.character = control;
-        op.standAnimation = "stand";
-        op.walkAnimation = "Walk";
+        
+        //CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+        //CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
+        //model.addControl(control);
+
+        //control.setPhysicsLocation(location);
+
+        
+        //op.character = control;
+        //op.standAnimation = "stand";
+        //op.walkAnimation = "Walk";
         //set the animations
-        op.animation = op.model.getControl(AnimControl.class);
+        /*op.animation = op.model.getControl(AnimControl.class);
         op.channel = op.animation.createChannel();
         for (int i = 0; i < op.animation.getSkeleton().getBoneCount(); i++) {
             op.channel.addBone(op.animation.getSkeleton().getBone(i));
-        }
+        }*/
         return op;
     }
 }
