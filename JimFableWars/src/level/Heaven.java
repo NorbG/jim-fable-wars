@@ -5,6 +5,7 @@
 package level;
 
 import Helper.Constants;
+import character.CharacterFactory;
 import character.Player;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -37,7 +38,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     
     private Item lastCloudOne;
     private LevelState partOne;
-    
+	
+	private final float LEVEL_BOTTOM = -10.f;    
 
     public Heaven() {
         super();
@@ -54,6 +56,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         this.rootNode = game.getRootNode();
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
         bulletAppState.getPhysicsSpace().add(player.control);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
         initKeys();
         loadPartZero();
@@ -248,6 +251,14 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     @Override
     public void update(float tpf){
         player.handleMovement(tpf, game);
+		
+		// check for death
+        if (player.getPlayerLocation().y < LEVEL_BOTTOM)
+        {
+            rootNode.detachChildNamed("Player");            
+            game.player = player = CharacterFactory.createPlayer("Dragon", assetManager);
+            getRootNode().attachChild(player.model);
+        }
     }
 
     private void loadAmbient() {
