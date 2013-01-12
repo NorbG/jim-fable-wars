@@ -32,7 +32,7 @@ public class CharacterFactory {
         player.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_small_1v2.j3o");
         player.model.setName("Player");
         player.model.scale(0.3f);
-        player.model.setLocalTranslation(0.f, 15.f, 0);
+        player.model.setLocalTranslation(20.f, 15.f, 0);
         
         BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 0.5f));
         GhostControl control = new GhostControl(collisionShape);
@@ -68,7 +68,7 @@ public class CharacterFactory {
         return player;
     }
 
-    public static Opponent createOpponent(String type, AssetManager assetManager, Vector3f location) {
+    public static Opponent createOpponent(String type, AssetManager assetManager, Vector3f location, BulletAppState bulletAppState) {
         //TODO: attack
         Opponent op = null;
         op = new Opponent(type, 1);
@@ -80,8 +80,14 @@ public class CharacterFactory {
         Node model = (Node) assetManager.loadModel("Models/Character/pixyJoinedclothes.j3o");
         model.scale(1.f);
         
-        model.setLocalTranslation(5, 5, 0);
+        //model.setLocalTranslation(5, 5, 0);
         op.model = model;
+        
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1, 1, 1));
+        RigidBodyControl control = new RigidBodyControl(collisionShape, 0);
+        model.addControl(control);
+        bulletAppState.getPhysicsSpace().add(control);
+        control.setPhysicsLocation(new Vector3f(10,5,0));
         
         //CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         //CharacterControl control = new CharacterControl(capsuleShape, 0.01f);

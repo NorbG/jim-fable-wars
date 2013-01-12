@@ -73,6 +73,8 @@ public class ItemFactory {
                 break;
         }
         
+        cloud.model.setName("asd123");
+        
         /*
          //Ã„nderungen an der Texture
          */

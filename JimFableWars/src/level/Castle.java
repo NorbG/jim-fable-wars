@@ -22,8 +22,8 @@ public class Castle extends LevelState{
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         Vector3f loc = new Vector3f(0, 10, 0);
-        sansa = CharacterFactory.createOpponent("", assetManager, loc);
-        rootNode.attachChild(sansa.model);
+        //sansa = CharacterFactory.createOpponent("", assetManager, loc);
+        //rootNode.attachChild(sansa.model);
     }
     
     
