@@ -14,7 +14,10 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.light.DirectionalLight;
 import com.jme3.animation.AnimEventListener;
+import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import java.awt.Point;
@@ -46,6 +49,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.rootNode = game.getRootNode();
+        
+        initKeys();
         loadPartZero();
     }
 
@@ -175,5 +180,52 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    private void initKeys() {
+        game.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_LEFT));
+        game.getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_RIGHT));
+        game.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_A));
+        game.getInputManager().addMapping("RangeAttack", new KeyTrigger(KeyInput.KEY_S));
+        game.getInputManager().addMapping("MeleeAttack", new KeyTrigger(KeyInput.KEY_D));
+        game.getInputManager().addMapping("Escape", new KeyTrigger(KeyInput.KEY_ESCAPE));
+
+        game.getInputManager().addListener(analogListener, new String[]{"Left", "Right", "Jump", "RangeAttack", "MeleeAttack", "Escape"});
+    }
+    private AnalogListener analogListener = new AnalogListener() {
+        public void onAnalog(String name, float value, float tpf) {
+            // move left
+            if (name.equals("Left")) {
+                player.moveLeft = true;
+            }
+
+            // move right
+            if (name.equals("Right")) {
+                player.moveRight = true;
+            }
+
+            // jump
+            if (name.equals("Jump")) {
+                if (player.currentJumpDelay >= player.JUMP_DELAY && player.canJump) {
+                    player.currentJumpDelay = 0;
+                    player.jumping = true;
+                }
+            }
+
+            // range attack
+            if (name.equals("RangeAttack")) {
+                player.handleRangedAttack();
+            }
+
+            // melee attack
+            if (name.equals("MeleeAttack")) {
+                player.handleMeleeAttack();
+            }
+        }
+    };
+    
+    @Override
+    public void update(float tpf){
+        player.handleMovement(tpf, this.game);
     }
 }

@@ -21,13 +21,21 @@ import mygame.Game;
  */
 public class CharacterFactory {
 
-    public static Player createPlayer(Game app, String type, AssetManager assetManager) {
+    public static Player createPlayer(String type, AssetManager assetManager) {
         //TODO attack
         Player player = null;
         if (type.equals("Dragon")) {
-            player = new Player(app, type, 3, 0);
+            player = new Player(type, 3, 0);
             player.adjustHealth(3);
         }
+        
+        player.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_small_1v2.j3o");
+        player.model.setName("Player");
+        player.model.scale(0.3f);
+        player.model.setLocalTranslation(0.f, 15.f, 0);
+        
+        
+        
         //load the model and the rigid body animation
         // Node character = (Node) assetManager.loadModel("Models/" + type + ".mesh.xml");
         /*Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");

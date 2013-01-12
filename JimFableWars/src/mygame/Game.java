@@ -36,7 +36,8 @@ public class Game extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-        player = CharacterFactory.createPlayer(this, "Dragon", assetManager);
+        player = CharacterFactory.createPlayer("Dragon", assetManager);
+        getRootNode().attachChild(player.model);
         //rootNode.attachChild(player.model);
         hudManager = new GUIManager(this);
 
@@ -96,11 +97,6 @@ public class Game extends SimpleApplication {
          stateManager.render(renderManager);
          // render the viewports
          renderManager.render(tpf, context.isRenderable());*/
-    }
-
-    @Override
-    public void simpleUpdate(float tpf) {
-        player.update(tpf);
     }
 
     public BulletAppState getBulletAppState() {
