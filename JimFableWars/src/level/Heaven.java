@@ -57,6 +57,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         
         initKeys();
         loadPartZero();
+        loadAmbient();
     }
 
     
@@ -247,5 +248,15 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     @Override
     public void update(float tpf){
         player.handleMovement(tpf, game);
+    }
+
+    private void loadAmbient() {
+        Node skyBox = (Node) assetManager.loadModel("Models/Ambient/Heaven/Sky.j3o");
+        DirectionalLight sun = new DirectionalLight();
+        sun.setColor(ColorRGBA.White);
+        sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
+        
+        rootNode.addLight(sun);
+        rootNode.attachChild(skyBox);
     }
 }
