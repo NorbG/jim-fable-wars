@@ -98,7 +98,7 @@ public class Player extends Character {
 
         // test if player is above ground
         Vector3f start = getPlayerLocation();
-        Vector3f end = getPlayerLocation().add(new Vector3f(0, -0.1f, 0));
+        Vector3f end = getPlayerLocation().add(new Vector3f(0, -1.f, 0));
         List<PhysicsRayTestResult> physRayResults = app.getBulletAppState().getPhysicsSpace().rayTest(start, end);
 
         // draw helper line
@@ -114,6 +114,8 @@ public class Player extends Character {
             canJump = false;    // player can't jump while falling
         } else {
             canJump = true;
+            
+            //System.out.println("");
         }
     }
 
@@ -129,7 +131,7 @@ public class Player extends Character {
         model = (Node) app.getAssetManager().loadModel("Models/Level/Heaven/cloud_small_1v2.j3o");
         model.setName("Player");
         model.scale(0.3f);
-        model.setLocalTranslation(0.f, 7.f, 0);
+        model.setLocalTranslation(0.f, 15.f, 0);
         app.getRootNode().attachChild(model);
 
     }
