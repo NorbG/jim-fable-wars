@@ -7,7 +7,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 import level.Heaven;
-import level.Hell;
 
 /**
  * test
@@ -19,10 +18,8 @@ public class Game extends SimpleApplication {
     public BulletAppState bulletAppState;
     public Player player = null;
     private Heaven heaven = null;
-    private Hell hell = null;
     private MenueState menue = null;
     private Camera camera;
-    private GUIManager hudManager;
 
     public static void main(String[] args) {
         Game app = new Game();
@@ -38,19 +35,10 @@ public class Game extends SimpleApplication {
         stateManager.attach(bulletAppState);
         player = CharacterFactory.createPlayer("Dragon", assetManager);
         getRootNode().attachChild(player.model);
-        //rootNode.attachChild(player.model);
-        hudManager = new GUIManager(this);
-
-        // createHeaven();
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
         loadMenue();
     }
 
-    private void loadHeaven() {
+    public void loadHeaven() {
         //remove Hell or Menue first
         heaven = new Heaven();
         heaven.initialize(stateManager, this);
@@ -63,9 +51,6 @@ public class Game extends SimpleApplication {
         stateManager.attach(camera);
     }
 
-    private void loadHell() {
-    }
-
     public void attachState(AppState level) {
         stateManager.attach(level);
     }
@@ -75,28 +60,8 @@ public class Game extends SimpleApplication {
     }
 
     private void loadMenue() {
-        menue = new MenueState("MainMenue");
-        menue.initialize(stateManager, this);
-        attachState(menue);
-    }
-
-    @Override
-    public void update() {
-        super.update();
-        if (heaven == null) {// && !menue.getCharacterName().isEmpty()){
-            loadHeaven();
-        }
-
-
-        // }
-        //load hell if...
-
-        // do some animation
-    /*    float tpf = timer.getTimePerFrame();
-         stateManager.update(tpf);
-         stateManager.render(renderManager);
-         // render the viewports
-         renderManager.render(tpf, context.isRenderable());*/
+        menue = new MenueState(this);
+        stateManager.attach(menue);
     }
 
     public BulletAppState getBulletAppState() {

@@ -226,6 +226,6 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     
     @Override
     public void update(float tpf){
-        player.handleMovement(tpf, this.game);
+        player.handleMovement(tpf, game);
     }
 }
