@@ -23,6 +23,11 @@ public class Player extends Character {
         INVINCIBLE, AGILITY_POWER_UP, ATTACK_POWER_UP, DEFAULT
     };
     
+    public static enum Direction {
+
+        LEFT, RIGHT
+    };
+    
     private State state = State.DEFAULT;
     private int distanceAttack;
     public String distanceAttackAnimation;
@@ -32,11 +37,13 @@ public class Player extends Character {
     private final float JUMP_DURATION = 0.5f;   // how long is the player jumping (seconds)?
     private final float JUMP_SPEED = 20;        // the upwards speed when jumping
     private final float GRAVITY = -10.f;        // the downwards speed when falling
-    public boolean moveLeft = false;           // currently moving left?
-    public boolean moveRight = false;          // currently moving right?
+    //public boolean moveLeft = false;           // currently moving left?
+    //public boolean moveRight = false;          // currently moving right?
     public float currentJumpDelay = 0;         // seconds since last jump
     public boolean jumping = false;            // is currently jumping?
     public boolean canJump = false;            // can currently jump (cannot when falling e.g.)
+    public Direction currentDirection = Direction.RIGHT;
+    public boolean isMoving = false;
 
     public Player(String name, int distanceAttack, int directAttack) {
         super(name, directAttack);
@@ -58,15 +65,15 @@ public class Player extends Character {
 
     public void handleMovement(float tpf, Game app) {
         // move player left or right if necessary
-        if (moveLeft) {
+        if (currentDirection == Direction.LEFT && isMoving) {
             model.move(-HORIZONTAL_SPEED * tpf, 0, 0);
         }
 
-        if (moveRight) {
+        if (currentDirection == Direction.RIGHT && isMoving) {
             model.move(HORIZONTAL_SPEED * tpf, 0, 0);
         }
-
-        moveLeft = moveRight = false;
+        
+        isMoving = false;
 
         // count seconds since last jump
         if (currentJumpDelay < JUMP_DELAY) {
@@ -104,8 +111,15 @@ public class Player extends Character {
         }
     }
 
-    public void handleRangedAttack() {
-        System.out.println("RangeAttack");
+    public Projectile handleRangedAttack() {
+        Vector3f direction = null;
+        
+        if (currentDirection == Direction.LEFT)
+            direction = new Vector3f(-1,0,0);
+        else if (currentDirection == Direction.RIGHT)
+            direction = new Vector3f(1,0,0);
+        
+        return new Projectile(direction, getPlayerLocation());
     }
 
     public void handleMeleeAttack() {
