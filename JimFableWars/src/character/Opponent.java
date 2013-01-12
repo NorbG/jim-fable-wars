@@ -12,6 +12,5 @@ public class Opponent extends Character{
     
     public Opponent(String name, int directAttack){
         super(name, directAttack);
-    }
-    
+    }    
 }

@@ -7,7 +7,6 @@ package character;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.CharacterControl;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Node;
 
 /**
@@ -15,10 +14,10 @@ import com.jme3.scene.Node;
  * @author Lena
  */
 public class Character {
-    
+
     public AnimControl animation;
     public AnimChannel channel;
-    private int health;
+    protected int health;
     private String name;
     private int directAttackPoints;
     public CharacterControl character = null;
@@ -28,42 +27,41 @@ public class Character {
     public String flyAnimation = "";
     public String directAttackAnimation = "";
     public String standAnimation = "";
-    
-    public Character(String name, int directAttackPoints){
+
+    public Character(String name, int directAttackPoints) {
         this.name = name;
         this.directAttackPoints = directAttackPoints;
     }
     
-    
-    public int directAttack(boolean hits){
-//        this.channel.setAnim("DirectAttack", 0.1f);
-  //      this.channel.setLoopMode(LoopMode.DontLoop);
-        if(hits)
-             return this.directAttackPoints;
-        else
-            return 0;
+    public void setHealth(int health){
+        this.health = health;
     }
-    
-    public boolean isDead(){
+
+    public int directAttack(boolean hits) {
+//        this.channel.setAnim("DirectAttack", 0.1f);
+        //      this.channel.setLoopMode(LoopMode.DontLoop);
+        if (hits) {
+            return this.directAttackPoints;
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean isDead() {
         return health > 0;
     }
-    
-    public void adjustHealth(int adjustement){
-        health += adjustement;
+
+    public void adjustHealth(int adjustment) {
+        health += adjustment;
     }
-    
-    public int getHealth(){
+
+    public int getHealth() {
         return this.health;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
 
-
- 
- 
-
-    
     
 }

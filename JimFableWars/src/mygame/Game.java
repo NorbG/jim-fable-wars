@@ -31,6 +31,7 @@ public class Game extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         flyCam.setMoveSpeed(10);
+        flyCam.setEnabled(false);
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
@@ -50,10 +51,13 @@ public class Game extends SimpleApplication {
 
         camera = new Camera();
         stateManager.attach(camera);
-        
-        rootNode.attachChild(CharacterFactory.createOpponent("ENEMY", assetManager, new Vector3f(5, 10, 0), getBulletAppState()).model);
     }
 
+    public Heaven getHeaven()
+    {
+        return heaven;
+    }
+    
     public void attachState(AppState level) {
         stateManager.attach(level);
     }

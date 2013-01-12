@@ -6,6 +6,7 @@ package level;
 
 import Helper.Constants;
 import character.CharacterFactory;
+import character.Opponent;
 import character.Player;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -16,16 +17,12 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.light.DirectionalLight;
 import com.jme3.animation.AnimEventListener;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +38,10 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     
     private Item lastCloudOne;
     private LevelState partOne;
-	
-    private final float LEVEL_BOTTOM = -10.f;    
     
-    private List movableClouds = new ArrayList();
+    private List<Opponent> opponents = new ArrayList<Opponent>();
+	
+	private final float LEVEL_BOTTOM = -10.f;    
 
     public Heaven() {
         super();
@@ -65,8 +62,23 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         
         initKeys();
         loadPartZero();
-        loadPartOne();
         loadAmbient();
+        
+        // TODO create enemy
+        Opponent enemy = CharacterFactory.createOpponent("Enemy",
+                assetManager, new Vector3f(5, 10, 0), game.getBulletAppState());
+        opponents.add(enemy);
+        game.getRootNode().attachChild(enemy.model);
+    }
+    
+    public Opponent getOpponent(String name){
+        for (int i = 0; i < opponents.size(); i++) {
+            if (name.equals(opponents.get(i).getName())) {
+                return opponents.get(i);
+            }
+        }
+        
+        return null;
     }
 
     
@@ -75,60 +87,50 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         // Part 0
         partZero = new LevelState();
         partZero.initialize(stateManager, game);
-        Item cloud;
-        
+        DirectionalLight sun = new DirectionalLight();
+        sun.setColor(ColorRGBA.White);
+        sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
+        rootNode.addLight(sun);
        // part.setParent(this);
         //Start
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(0, 0, 0), bulletAppState, assetManager, false).model);
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(6, 0, 0), bulletAppState, assetManager, false).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(0, 0, 0), bulletAppState, assetManager).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(6, 0, 0), bulletAppState, assetManager).model);
 
         // fallende Wolken
-        cloud = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 0, 0), bulletAppState, assetManager, true);
-        movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
-        cloud = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(12, 0, 0), bulletAppState, assetManager, true);
-        movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
-        cloud = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(15, 0, 0), bulletAppState, assetManager, true);
-        movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
-        cloud = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(18, 0, 0), bulletAppState, assetManager, true);
-        movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
-        cloud = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(21, 0, 0), bulletAppState, assetManager, true);
-        movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
-        cloud = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(24, 0, 0), bulletAppState, assetManager, true);
-        movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 0, 0), bulletAppState, assetManager).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(12, 0, 0), bulletAppState, assetManager).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(15, 0, 0), bulletAppState, assetManager).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(18, 0, 0), bulletAppState, assetManager).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(21, 0, 0), bulletAppState, assetManager).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(24, 0, 0), bulletAppState, assetManager).model);
         
         //Part1
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(31, 3, 0), bulletAppState, assetManager, false).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(31, 3, 0), bulletAppState, assetManager).model);
         // erster Gegner
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(45, 1, 0), bulletAppState, assetManager, false).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(45, 1, 0), bulletAppState, assetManager).model);
         // bewegende Wolke nach oben/unten
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(56, 5, 0), bulletAppState, assetManager, false).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(56, 5, 0), bulletAppState, assetManager).model);
         // item
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(50, 18, 0), bulletAppState, assetManager, false).model);
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(62, 13, 0), bulletAppState, assetManager, false).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(50, 18, 0), bulletAppState, assetManager).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(62, 13, 0), bulletAppState, assetManager).model);
         // zweiter Gegner
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(73, 6, 0), bulletAppState, assetManager, false).model);
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(73, 6, 0), bulletAppState, assetManager).model);
   
       //Part 2
       // Treppe
       
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(80, 9, 0), bulletAppState, assetManager, false).model);
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(85, 12, 0), bulletAppState, assetManager, false).model);
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 15, 0), bulletAppState, assetManager, false).model);
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(95, 18, 0), bulletAppState, assetManager, false).model);
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(100, 21, 0), bulletAppState, assetManager, false).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(80, 9, 0), bulletAppState, assetManager).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(85, 12, 0), bulletAppState, assetManager).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 15, 0), bulletAppState, assetManager).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(95, 18, 0), bulletAppState, assetManager).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(100, 21, 0), bulletAppState, assetManager).model);
 
       // geheime PLatform mit Gegner
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(112, 21, 0), bulletAppState, assetManager, false).model);
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(98, 2, 0), bulletAppState, assetManager, false).model);
-      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(112, 2, 0), bulletAppState, assetManager, false).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(112, 21, 0), bulletAppState, assetManager).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(98, 2, 0), bulletAppState, assetManager).model);
+      partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(112, 2, 0), bulletAppState, assetManager).model);
       // bewegende Wolke nach oben/unten mit Item
-      lastCloudZero = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(124, 2, 0), bulletAppState, assetManager, false);
+      lastCloudZero = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(124, 2, 0), bulletAppState, assetManager);
       rootNode.attachChild(lastCloudZero.model);
         
         this.game.attachState(partZero);
@@ -145,53 +147,42 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         //Part 3
        // Level 1 //
        partOne.rootNode.attachChild(lastCloudZero.model);
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(123, 27, 0), bulletAppState, assetManager, false).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(123, 27, 0), bulletAppState, assetManager).model);
        // dritter Gegner
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(116, 30, 0), bulletAppState, assetManager, false).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(116, 30, 0), bulletAppState, assetManager).model);
        // bewegende Wolken oben/unten
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(107, 32, 0), bulletAppState, assetManager, false).model);
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(98, 32, 0), bulletAppState, assetManager, false).model);
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(89, 32, 0), bulletAppState, assetManager, false).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(107, 32, 0), bulletAppState, assetManager).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(98, 32, 0), bulletAppState, assetManager).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(89, 32, 0), bulletAppState, assetManager).model);
 
        // bewegende Wolken links/rechts
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(82, 36, 0), bulletAppState, assetManager, false).model);
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(78, 42, 0), bulletAppState, assetManager, false).model);
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(74, 48, 0), bulletAppState, assetManager, false).model);
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(70, 54, 0), bulletAppState, assetManager, false).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(82, 36, 0), bulletAppState, assetManager).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(78, 42, 0), bulletAppState, assetManager).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(74, 48, 0), bulletAppState, assetManager).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(70, 54, 0), bulletAppState, assetManager).model);
         
       
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(40, 54, 0), bulletAppState, assetManager, false).model);
-       //Todestern
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(40, 54, 0), bulletAppState, assetManager).model);
        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(35, 56, 0), bulletAppState, assetManager).model);
        
        // bewegende Wolke oben/unten
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(30, 54, 0), bulletAppState, assetManager, false).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(30, 54, 0), bulletAppState, assetManager).model);
         // vierter Gegner
-       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(15, 20, 0), bulletAppState, assetManager, false).model);
+       partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(15, 20, 0), bulletAppState, assetManager).model);
 
         // bewegende Wolke oben/unten mit Todesternhinderniss
-        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(5, 20, 0), bulletAppState, assetManager, false).model);
-        //Todesstern
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(5, 40, 0), bulletAppState, assetManager).model);
-        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 34, 0), bulletAppState, assetManager, false).model);
+        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(5, 20, 0), bulletAppState, assetManager).model);
+        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 34, 0), bulletAppState, assetManager).model);
         // item
-        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(14, 38, 0), bulletAppState, assetManager, false).model);
-        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 42, 0), bulletAppState, assetManager, false).model);
+        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(14, 38, 0), bulletAppState, assetManager).model);
+        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 42, 0), bulletAppState, assetManager).model);
         // bewegende Wolke links/rechts
-        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(5, 64, 0), bulletAppState, assetManager, false).model);
+        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(5, 64, 0), bulletAppState, assetManager).model);
         // viele Todessterne
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(18, 64, 0), bulletAppState, assetManager).model);
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 64, 0), bulletAppState, assetManager).model);
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 75, 0), bulletAppState, assetManager).model);
-        
-         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(58, 64, 0), bulletAppState, assetManager).model);
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(61, 64, 0), bulletAppState, assetManager).model);
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(68, 64, 0), bulletAppState, assetManager).model);
-        
         // mit Todesstern und fünftem Gegner
-        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(80, 64, 0), bulletAppState, assetManager, false).model);
+        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(80, 64, 0), bulletAppState, assetManager).model);
         // sechster Gegner
-        lastCloudOne = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 68, 0), bulletAppState, assetManager, false);
+        lastCloudOne = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 68, 0), bulletAppState, assetManager);
         rootNode.attachChild(lastCloudOne.model);
         
         this.game.attachState(partOne);
@@ -208,29 +199,12 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     @Override
     public void collision(PhysicsCollisionEvent event) {
         if ( event.getNodeA().getName().equals("player")
-                && event.getNodeB().getName().equals("Star")) 
-        {
+                && event.getNodeB().getName().equals("Star")) {
              //player.adjustHealth(1);
         }
         else if ( event.getNodeB().getName().equals("player") 
-                    && event.getNodeA().getName().equals("Star")) 
-        {
+                    && event.getNodeA().getName().equals("Star")) {
             //player.adjustHealth(1);
-        }
-        else if(event.getNodeA().getName().contains("movable") && event.getNodeB().getName().contains("Player"))
-        {
-            String cloud = event.getNodeA().getName();
-            String cloudIndex = cloud.split("e")[1];
-            Cloud cloudItem = (Cloud) movableClouds.get(Integer.getInteger(cloudIndex));
-            cloudItem.fall(new Vector3f(cloudItem.model.getLocalTranslation().x, LEVEL_BOTTOM - 5, 0), game.getTimer().getTimePerFrame());
-        }
-        else if(event.getNodeA().getName().contains("Player") && event.getNodeB().getName().contains("movable"))
-        {
-           
-           String cloud = event.getNodeB().getName();
-           String cloudIndex = cloud.split("e")[1];
-           Cloud cloudItem = (Cloud) movableClouds.get(Integer.parseInt(cloudIndex));           
-            cloudItem.fall(new Vector3f(cloudItem.model.getLocalTranslation().x, LEVEL_BOTTOM - 5, 0), game.getTimer().getTimePerFrame());
         }
     }
 
@@ -297,7 +271,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     public void update(float tpf){
         player.handleMovement(tpf, game);
 		
-		// check for death
+	// check for death
         if (player.getPlayerLocation().y < LEVEL_BOTTOM)
         {
             rootNode.detachChildNamed("Player");            
@@ -308,23 +282,11 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 
     private void loadAmbient() {
         Node skyBox = (Node) assetManager.loadModel("Models/Ambient/Heaven/Sky.j3o");
-        Node ambient_clouds = (Node) assetManager.loadModel("Models/Ambient/Heaven/AmbientClouds.j3o");
-        Material mat_tt = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat_tt.setTexture("ColorMap", assetManager.loadTexture("Textures/Ambient_Sky_Clouds_UVLayout.png"));
-        mat_tt.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-        ambient_clouds.setLocalTranslation(ambient_clouds.getLocalTranslation().x, ambient_clouds.getLocalTranslation().y, (float)(ambient_clouds.getLocalTranslation().z - 40.0f));
-        mat_tt.setTransparent(true);
-      
-        ambient_clouds.setMaterial(mat_tt);
-       
-        ambient_clouds.setQueueBucket(Bucket.Transparent);
         DirectionalLight sun = new DirectionalLight();
         sun.setColor(ColorRGBA.White);
         sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
         
         rootNode.addLight(sun);
         rootNode.attachChild(skyBox);
-        rootNode.attachChild(ambient_clouds);
-    
     }
 }
