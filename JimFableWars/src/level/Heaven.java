@@ -21,8 +21,11 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -305,11 +308,23 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 
     private void loadAmbient() {
         Node skyBox = (Node) assetManager.loadModel("Models/Ambient/Heaven/Sky.j3o");
+        Node ambient_clouds = (Node) assetManager.loadModel("Models/Ambient/Heaven/AmbientClouds.j3o");
+        Material mat_tt = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat_tt.setTexture("ColorMap", assetManager.loadTexture("Textures/Ambient_Sky_Clouds_UVLayout.png"));
+        mat_tt.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        ambient_clouds.setLocalTranslation(ambient_clouds.getLocalTranslation().x, ambient_clouds.getLocalTranslation().y, (float)(ambient_clouds.getLocalTranslation().z - 40.0f));
+        mat_tt.setTransparent(true);
+      
+        ambient_clouds.setMaterial(mat_tt);
+       
+        ambient_clouds.setQueueBucket(Bucket.Transparent);
         DirectionalLight sun = new DirectionalLight();
         sun.setColor(ColorRGBA.White);
         sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
         
         rootNode.addLight(sun);
         rootNode.attachChild(skyBox);
+        rootNode.attachChild(ambient_clouds);
+    
     }
 }

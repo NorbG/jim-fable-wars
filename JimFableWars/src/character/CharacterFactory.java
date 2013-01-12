@@ -88,13 +88,7 @@ public class CharacterFactory {
         model.addControl(control);
         bulletAppState.getPhysicsSpace().add(control);
         control.setPhysicsLocation(new Vector3f(10,5,0));
-        
-        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1, 1, 1));
-        RigidBodyControl control = new RigidBodyControl(collisionShape, 0);
-        model.addControl(control);
-        bulletAppState.getPhysicsSpace().add(control);
-        control.setPhysicsLocation(new Vector3f(10,5,0));
-        
+              
         //CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         //CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
         //model.addControl(control);
