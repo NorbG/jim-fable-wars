@@ -176,12 +176,11 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     public void collision(PhysicsCollisionEvent event) {
         if ( event.getNodeA().getName().equals("player")
                 && event.getNodeB().getName().equals("Star")) {
-             System.out.println("HALLO KOLLISION!");
-             player.adjustHealth(1);
+             //player.adjustHealth(1);
         }
         else if ( event.getNodeB().getName().equals("player") 
                     && event.getNodeA().getName().equals("Star")) {
-            player.adjustHealth(1);
+            //player.adjustHealth(1);
         }
        
     }

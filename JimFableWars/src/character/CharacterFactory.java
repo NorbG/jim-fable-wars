@@ -38,6 +38,7 @@ public class CharacterFactory {
         BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1.5f, 6f, 1));
         GhostControl control = new GhostControl(collisionShape);
         player.control = control;
+        player.model.addControl(control);
         
         
         
