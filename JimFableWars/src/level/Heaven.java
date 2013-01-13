@@ -177,27 +177,27 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
        // bewegende Wolken oben/unten
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(107, 32, 0), bulletAppState, assetManager, Cloud.DIRECTION_UP, true, new Vector3f(107, 38, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(98, 34, 0), bulletAppState, assetManager, Cloud.DIRECTION_UP, true, new Vector3f(98, 40, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(89, 30, 0), bulletAppState, assetManager, Cloud.DIRECTION_UP, true, new Vector3f(89, 36, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
 
        // bewegende Wolken links/rechts
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(82, 36, 0), bulletAppState, assetManager, Cloud.DIRECTION_LEFT, true, new Vector3f(72, 36, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(74, 42, 0), bulletAppState, assetManager, Cloud.DIRECTION_LEFT, true, new Vector3f(64, 42, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(66, 48, 0), bulletAppState, assetManager, Cloud.DIRECTION_LEFT, true, new Vector3f(56, 48, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(58, 54, 0), bulletAppState, assetManager, Cloud.DIRECTION_LEFT, true, new Vector3f(45, 54, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
         
       
        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(40, 54, 0), bulletAppState, assetManager).model);
@@ -207,14 +207,14 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
        // bewegende Wolke oben/unten
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(30, 54, 0), bulletAppState, assetManager, Cloud.DIRECTION_DOWN, true, new Vector3f(30, 20, 0));
        movableClouds.add(cloud);
-       partZero.rootNode.attachChild(cloud.model);
+       partOne.rootNode.attachChild(cloud.model);
         // vierter Gegner
        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(15, 20, 0), bulletAppState, assetManager).model);
 
         // bewegende Wolke oben/unten mit Todesternhinderniss
         cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(5, 20, 0), bulletAppState, assetManager, Cloud.DIRECTION_UP, true, new Vector3f(5, 64, 0));
         movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
+        partOne.rootNode.attachChild(cloud.model);
         //Todesstern
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(5, 40, 0), bulletAppState, assetManager).model);
         partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 34, 0), bulletAppState, assetManager).model);
@@ -222,13 +222,13 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(14, 38, 0), bulletAppState, assetManager).model);
         partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(9, 42, 0), bulletAppState, assetManager).model);
         // bewegende Wolke links/rechts
-        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(10, 64, 0), bulletAppState, assetManager, Cloud.DIRECTION_RIGHT, false, new Vector3f(72, 64, 0));
+        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(10, 62, 0), bulletAppState, assetManager, Cloud.DIRECTION_RIGHT, false, new Vector3f(72, 62, 0));
         movableClouds.add(cloud);
-        partZero.rootNode.attachChild(cloud.model);
+        partOne.rootNode.attachChild(cloud.model);
         // viele Todessterne
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(18, 64, 0), bulletAppState, assetManager).model);
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 64, 0), bulletAppState, assetManager).model);
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 72, 0), bulletAppState, assetManager).model);
+        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 74, 0), bulletAppState, assetManager).model);
         
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(58, 64, 0), bulletAppState, assetManager).model);
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(68, 64, 0), bulletAppState, assetManager).model);

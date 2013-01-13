@@ -58,12 +58,12 @@ public class ItemFactory {
                 break;
             case Constants.CLOUD_MEDIUM_1v1:
                 cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_medium_1v1_low_poly.j3o");
-                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(3, 0.5f, 1)), 0);
+                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(3.1f, 0.5f, 1)), 0);
                 
                 break;
             case Constants.CLOUD_Long_1v1:
                 cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_long_1v1_low_Poly.j3o");
-                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(7, 0.5f, 1)), 0);
+                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(7.2f, 0.5f, 1)), 0);
                 break;
         }
         
