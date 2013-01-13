@@ -46,8 +46,8 @@ public class ItemFactory {
         return item;
     }
     
-    public static Item createCloud(int type, Vector3f location,  BulletAppState appState, AssetManager assetManager, boolean movable){
-        Cloud cloud = new Cloud("Cloud");
+    public static Cloud createCloud(int type, Vector3f location,  BulletAppState appState, AssetManager assetManager){
+        Cloud cloud = new Cloud("Cloud", location);
         RigidBodyControl cloudControl = null;
         
         switch(type)
@@ -67,15 +67,23 @@ public class ItemFactory {
                 break;
         }
         
-        if(movable)
-        {
-            cloud.model.setName("movable" + movableCloudIndex);
-            movableCloudIndex++;
-        }
-        
         cloud.model.setLocalTranslation(location.x, location.y, 0);
         cloud.model.addControl(cloudControl);
         appState.getPhysicsSpace().add(cloud.model);
+        
+        return cloud;
+    }
+    
+    public static Cloud createMovableCloud(int type, Vector3f location,  BulletAppState appState, AssetManager assetManager, int direction, boolean repeat, Vector3f endPosition)
+    {
+        Cloud cloud = createCloud(type, location, appState, assetManager);
+        cloud.direction = direction;
+        cloud.repeat = repeat;
+        cloud.endPosition = endPosition;
+        
+        
+        cloud.model.setName("movable" + movableCloudIndex);
+        movableCloudIndex++;
         
         return cloud;
     }
@@ -90,6 +98,7 @@ public class ItemFactory {
         deathstar.model = (Node) assetManager.loadModel("Models/Level/Heaven/starV1.j3o");
         deathstar.model.setLocalScale(0.5f);
         deathstar.model.setLocalTranslation(location.x, location.y, 0);
+        deathstar.model.setName("DeathStar");
         
         RigidBodyControl control = new RigidBodyControl(new BoxCollisionShape(new Vector3f(1.2f, 1.4f, 1)), 0);
         deathstar.model.addControl(control);

@@ -111,6 +111,14 @@ public class Player extends Character {
         } else {
             canJump = true;
         }
+        
+        //test if player above a upwarts movable cloud 
+        end = getPlayerLocation().add(new Vector3f(0, -1.8f, 0));
+        physRayResults = app.getBulletAppState().getPhysicsSpace().rayTest(start, end);
+        if(!physRayResults.isEmpty())
+        {
+            model.move(0, tpf * 3f, 0);
+        }
     }
 
     public Projectile handleRangedAttack() {
