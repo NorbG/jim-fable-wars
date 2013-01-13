@@ -28,6 +28,7 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import java.util.ArrayList;
 import java.util.List;
 import character.Opponent;
+import character.Projectile;
 import com.jme3.bullet.control.GhostControl;
 
 /**
@@ -69,10 +70,10 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         loadAmbient();
 
         // TODO create enemy
-        Opponent enemy = CharacterFactory.createOpponent("Enemy",
+        /*Opponent enemy = CharacterFactory.createOpponent("Enemy",
                 assetManager, new Vector3f(5, 10, 0), game.getBulletAppState());
         opponents.add(enemy);
-        game.getRootNode().attachChild(enemy.model);
+        game.getRootNode().attachChild(enemy.model);*/
     }
 
     public Opponent getOpponent(String name) {
@@ -350,11 +351,40 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         {
             resetGame();
         }
-        
+
         //move clouds
-        for(Cloud cloud : moveClouds)
-        {
+        for (Cloud cloud : moveClouds) {
             cloud.move(tpf);
+        }
+
+        checkEnemyAttack(tpf);
+    }
+
+    private void checkEnemyAttack(float tpf) {
+        Vector3f playerPos = player.getPlayerLocation();
+
+        for (Opponent o : opponents) {
+            Vector3f enemyPos = o.model.getLocalTranslation();
+            o.advanceAttack(tpf);
+
+            float distanceToPlayer = enemyPos.distance(playerPos);
+
+            // if enemy is at maximum distance of 10
+            if (distanceToPlayer < 10.f) {
+                Vector3f direction = null;
+
+                if (enemyPos.x < playerPos.x) {
+                    direction = new Vector3f(1, 0, 0);
+                } else {
+                    direction = new Vector3f(-1, 0, 0);
+                }
+
+                Projectile p = o.handleRangedAttack(direction, enemyPos);
+
+                if (p != null) {
+                    game.attachState(p);
+                }
+            }
         }
     }
 
@@ -397,5 +427,9 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         game.player = player = CharacterFactory.createPlayer("Dragon", assetManager);
         bulletAppState.getPhysicsSpace().add(player.control);
         getRootNode().attachChild(player.model);
+    }
+    
+    public void killOpponent(String name) {
+        opponents.remove(getOpponent(name));
     }
 }
