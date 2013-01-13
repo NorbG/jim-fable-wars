@@ -50,6 +50,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     private List<Opponent> opponents = new ArrayList<Opponent>();
     private List<Cloud> movableClouds = new ArrayList<Cloud>();
     private List<Cloud> moveClouds = new ArrayList<Cloud>();
+    
+    boolean complete = false;
 
     public Heaven() {
         super();
@@ -241,6 +243,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(80, 64, 0), bulletAppState, assetManager).model);
         // sechster Gegner
         lastCloudOne = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 68, 0), bulletAppState, assetManager);
+        lastCloudOne.model.setName("Last Cloud");
         rootNode.attachChild(lastCloudOne.model);
 
         this.game.attachState(partOne);
@@ -283,6 +286,23 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
            if(!moveClouds.contains(cloudItem))
             {
                 moveClouds.add(cloudItem);
+            }
+        }
+        else if(event.getNodeA().getName().contains("Last Cloud") && event.getNodeB().getName().contains("Player"))
+        {
+            if(!complete)
+            {
+                complete = true;
+                game.loadMenue();
+            }
+            
+        }
+        else if(event.getNodeA().getName().contains("Player") && event.getNodeB().getName().contains("Last Cloud"))
+        {
+          if(!complete)
+            {
+                complete = true;
+                game.loadMenue();
             }
         }
     }
