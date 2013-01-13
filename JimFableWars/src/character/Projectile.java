@@ -86,10 +86,14 @@ public class Projectile extends AbstractAppState {
 
             if (hitObject instanceof Node) {
                 Node hitNode = ((Node) hitObject);
-                // this makes no sense but without it, the target can't be removed
-                hitNode.getControl(RigidBodyControl.class)
-                        .setPhysicsLocation(position.add(new Vector3f(0, 5, 0)));
-                hitNode.getParent().getChildren().remove(hitNode);
+                
+                if (hitNode.getName().equals("Enemy"))
+                {
+                    // this makes no sense but without it, the target can't be removed
+                    hitNode.getControl(RigidBodyControl.class)
+                            .setPhysicsLocation(position.add(new Vector3f(0, 5, 0)));
+                    hitNode.getParent().getChildren().remove(hitNode);
+                }
                 
                 // remove fireball
                 emitter.getParent().getChildren().remove(emitter);

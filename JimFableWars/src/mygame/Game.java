@@ -25,6 +25,8 @@ public class Game extends SimpleApplication {
     public static void main(String[] args) {
         Game app = new Game();
         app.setShowSettings(true);
+        app.setDisplayFps(false);
+        app.setDisplayStatView(false);
         app.start();
     }
 
