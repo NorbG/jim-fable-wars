@@ -98,11 +98,11 @@ public class Player extends Character {
         List<PhysicsRayTestResult> physRayResults = app.getBulletAppState().getPhysicsSpace().rayTest(start, end);
 
         // draw helper line
-        Geometry g = new Geometry("line", new Line(start, end));
+        /*Geometry g = new Geometry("line", new Line(start, end));
         Material m = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         g.setMaterial(m);
         app.getRootNode().detachChildNamed("line");
-        app.getRootNode().attachChild(g);
+        app.getRootNode().attachChild(g);*/
 
         // if test failed -> player is falling because he is not above ground
         if (physRayResults.isEmpty()) {

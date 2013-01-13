@@ -68,8 +68,11 @@ public class Game extends SimpleApplication {
         stateManager.detach(level);
     }
 
-    private void loadMenue() {
+    public void loadMenue() {
         menue = new MenueState(this);
+        if (stateManager.hasState(heaven)) {
+            detachState(heaven);
+        }
         stateManager.attach(menue);
     }
 

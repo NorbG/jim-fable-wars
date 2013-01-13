@@ -4,6 +4,7 @@
  */
 package character;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -46,31 +47,18 @@ public class CharacterFactory {
         mat_tt.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 
         player.model.setMaterial(mat_tt);
-        
-        //load the model and the rigid body animation
-        // Node character = (Node) assetManager.loadModel("Models/" + type + ".mesh.xml");
-        /*Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
-        CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
-        // control.setPhysicsSpace(appState.getPhysicsSpace());
-
-        player.model = model;
-        player.model.addControl(control);
-        
-      //  player.model.setLocalTranslation(0, 10, 0);
-        control.setPhysicsLocation(new Vector3f(0, 10, 0));
 
 
 
-        player.character = control;
-        player.standAnimation = "stand";
-        player.walkAnimation = "Walk";
+
+        /*player.standAnimation = "stand";
+        player.flyAnimation = "dragon_move";
         //set the animations
         player.animation = player.model.getControl(AnimControl.class);
         player.channel = player.animation.createChannel();
-        //  for(int i = 0; i < player.animation.getSkeleton().getBoneCount(); i++){
-        //      player.channel.addBone(player.animation.getSkeleton().getBone(i));
-        //}*/
+          for(int i = 0; i < player.animation.getSkeleton().getBoneCount(); i++){
+              player.channel.addBone(player.animation.getSkeleton().getBone(i));
+        }*/
         return player;
     }
 

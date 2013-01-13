@@ -65,7 +65,6 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         this.rootNode = game.getRootNode();
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
         bulletAppState.getPhysicsSpace().add(player.control);
-        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         initKeys();
         loadPartZero();
@@ -353,7 +352,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 	// check for death
         if (player.getPlayerLocation().y < LEVEL_BOTTOM || player.isDead())
         {
-            resetGame();
+            game.loadMenue();
+            //resetGame();
         }
 
         //move clouds
