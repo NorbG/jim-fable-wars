@@ -29,6 +29,7 @@ public class Projectile extends AbstractAppState {
     private Game game;
     private ParticleEmitter emitter;
     private final float PROJECTILE_SPEED = 10.f;
+    private boolean enabled = true;
 
     public Projectile(Vector3f direction, Vector3f position) {
         this.direction = direction;
@@ -64,6 +65,9 @@ public class Projectile extends AbstractAppState {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+        
+        if (!enabled)
+            return;
 
         position = position.add(direction.mult(tpf * PROJECTILE_SPEED));
         emitter.setLocalTranslation(position);
@@ -93,10 +97,17 @@ public class Projectile extends AbstractAppState {
                     hitNode.getControl(RigidBodyControl.class)
                             .setPhysicsLocation(position.add(new Vector3f(0, 5, 0)));
                     hitNode.getParent().getChildren().remove(hitNode);
+                    
+                    game.getHeaven().killOpponent(hitNode.getName());
+                }
+                else if (hitNode.getName().equals("Player"))
+                {
+                    game.player.setHealth(0);
                 }
                 
                 // remove fireball
                 emitter.getParent().getChildren().remove(emitter);
+                enabled = false;
             }
         }
     }
