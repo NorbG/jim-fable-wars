@@ -42,7 +42,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     private LevelState partOne;
 	
     private final float LEVEL_BOTTOM = -10.f;    
-    
+    private List<Opponent> opponents = new ArrayList<Opponent>();
     private List<Cloud> movableClouds = new ArrayList();
     private List<Cloud> moveClouds = new ArrayList();
 
@@ -344,7 +344,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     public void update(float tpf) {
         player.handleMovement(tpf, game);
 		
-		// check for death
+	// check for death
         if (player.getPlayerLocation().y < LEVEL_BOTTOM || player.isDead())
         {
             game.detachState(partZero);

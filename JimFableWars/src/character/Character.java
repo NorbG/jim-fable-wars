@@ -48,7 +48,7 @@ public class Character {
     }
 
     public boolean isDead() {
-        return health > 0;
+        return health <= 0;
     }
 
     public void adjustHealth(int adjustment) {
