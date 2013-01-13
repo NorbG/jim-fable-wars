@@ -94,7 +94,7 @@ public class Player extends Character {
 
         // test if player is above ground
         Vector3f start = getPlayerLocation();
-        Vector3f end = getPlayerLocation().add(new Vector3f(0, -2.f, 0));
+        Vector3f end = getPlayerLocation().add(new Vector3f(0, -1.5f, 0));
         List<PhysicsRayTestResult> physRayResults = app.getBulletAppState().getPhysicsSpace().rayTest(start, end);
 
         // draw helper line
@@ -113,7 +113,7 @@ public class Player extends Character {
         }
         
         //test if player above a upwarts movable cloud 
-        end = getPlayerLocation().add(new Vector3f(0, -1.8f, 0));
+        end = getPlayerLocation().add(new Vector3f(0, -1.3f, 0));
         physRayResults = app.getBulletAppState().getPhysicsSpace().rayTest(start, end);
         if(!physRayResults.isEmpty())
         {

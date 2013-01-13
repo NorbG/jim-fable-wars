@@ -96,15 +96,19 @@ public class ItemFactory {
     public static Item createDeathStar(Vector3f location, BulletAppState appState, AssetManager assetManager){
         Item deathstar = new Item("DeathStar");
         deathstar.model = (Node) assetManager.loadModel("Models/Level/Heaven/starV1.j3o");
-        deathstar.model.setLocalScale(0.5f);
+        deathstar.model.setLocalScale(0.3f);
         deathstar.model.setLocalTranslation(location.x, location.y, 0);
         deathstar.model.setName("DeathStar");
         
-        RigidBodyControl control = new RigidBodyControl(new BoxCollisionShape(new Vector3f(1.2f, 1.4f, 1)), 0);
+        RigidBodyControl control = new RigidBodyControl(new BoxCollisionShape(new Vector3f(0.8f, 0.8f, 0.8f)), 0);
         deathstar.model.addControl(control);
         appState.getPhysicsSpace().add(deathstar.model);
                 
         return deathstar;
     }
     
+    public static void reset()
+    {
+        movableCloudIndex = 0;
+    }
 }

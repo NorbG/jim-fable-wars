@@ -28,6 +28,7 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import java.util.ArrayList;
 import java.util.List;
 import character.Opponent;
+import com.jme3.bullet.control.GhostControl;
 
 /**
  *
@@ -43,8 +44,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 	
     private final float LEVEL_BOTTOM = -10.f;    
     private List<Opponent> opponents = new ArrayList<Opponent>();
-    private List<Cloud> movableClouds = new ArrayList();
-    private List<Cloud> moveClouds = new ArrayList();
+    private List<Cloud> movableClouds = new ArrayList<Cloud>();
+    private List<Cloud> moveClouds = new ArrayList<Cloud>();
 
     public Heaven() {
         super();
@@ -201,7 +202,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
       
        partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(40, 54, 0), bulletAppState, assetManager).model);
        //Todestern
-       partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(35, 56, 0), bulletAppState, assetManager).model);
+       partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(35, 54, 0), bulletAppState, assetManager).model);
        
        // bewegende Wolke oben/unten
        cloud = ItemFactory.createMovableCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(30, 54, 0), bulletAppState, assetManager, Cloud.DIRECTION_DOWN, true, new Vector3f(30, 20, 0));
@@ -227,7 +228,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         // viele Todessterne
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(18, 64, 0), bulletAppState, assetManager).model);
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 64, 0), bulletAppState, assetManager).model);
-        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 75, 0), bulletAppState, assetManager).model);
+        partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(40, 72, 0), bulletAppState, assetManager).model);
         
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(58, 64, 0), bulletAppState, assetManager).model);
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(68, 64, 0), bulletAppState, assetManager).model);
@@ -263,7 +264,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         {
             String cloud = event.getNodeA().getName();
             String cloudIndex = cloud.split("e")[1];
-            Cloud cloudItem = (Cloud) movableClouds.get(Integer.getInteger(cloudIndex));
+            Cloud cloudItem = (Cloud) movableClouds.get(Integer.parseInt(cloudIndex));
             if(!moveClouds.contains(cloudItem))
             {
                 moveClouds.add(cloudItem);
@@ -347,15 +348,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 	// check for death
         if (player.getPlayerLocation().y < LEVEL_BOTTOM || player.isDead())
         {
-            game.detachState(partZero);
-            game.detachState(partOne);
-            
-            loadPartZero();
-            loadPartOne();
-            
-            rootNode.detachChildNamed("Player");            
-            game.player = player = CharacterFactory.createPlayer("Dragon", assetManager);
-            getRootNode().attachChild(player.model);
+            resetGame();
         }
         
         //move clouds
@@ -385,5 +378,24 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         rootNode.attachChild(skyBox);
         rootNode.attachChild(ambient_clouds);
 
+    }
+
+    private void resetGame() {
+        game.detachState(partZero);
+        game.detachState(partOne);
+        // clear all lists
+        movableClouds.clear();
+        moveClouds.clear();
+        opponents.clear();
+        
+        ItemFactory.reset();
+        loadPartZero();
+        loadPartOne();
+  
+        rootNode.detachChildNamed("Player");           
+        bulletAppState.getPhysicsSpace().remove(player.control);
+        game.player = player = CharacterFactory.createPlayer("Dragon", assetManager);
+        bulletAppState.getPhysicsSpace().add(player.control);
+        getRootNode().attachChild(player.model);
     }
 }
