@@ -27,6 +27,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import java.util.ArrayList;
 import java.util.List;
+import character.Opponent;
 
 /**
  *
@@ -37,7 +38,6 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     //parts in Node unterteilt, die attached & detached werden,
     private Item lastCloudZero;
     private LevelState partZero;
-    
     private Item lastCloudOne;
     private LevelState partOne;
 	
@@ -50,7 +50,6 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         super();
     }
 
-
     public Node getRootNode() {
         return this.rootNode;
     }
@@ -62,14 +61,29 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
         bulletAppState.getPhysicsSpace().add(player.control);
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-        
+
         initKeys();
         loadPartZero();
         loadPartOne();
         loadAmbient();
+
+        // TODO create enemy
+        Opponent enemy = CharacterFactory.createOpponent("Enemy",
+                assetManager, new Vector3f(5, 10, 0), game.getBulletAppState());
+        opponents.add(enemy);
+        game.getRootNode().attachChild(enemy.model);
     }
 
-    
+    public Opponent getOpponent(String name) {
+        for (int i = 0; i < opponents.size(); i++) {
+            if (name.equals(opponents.get(i).getName())) {
+                return opponents.get(i);
+            }
+        }
+
+        return null;
+    }
+
     private void loadPartZero() {
         // Level 0 //
         // Part 0
@@ -101,7 +115,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         cloud = ItemFactory.createMovableCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(24, 0, 0), bulletAppState, assetManager, Cloud.DIRECTION_DOWN, false, new Vector3f(24, LEVEL_BOTTOM - 3, 0));
         movableClouds.add(cloud);
         partZero.rootNode.attachChild(cloud.model);
-        
+
         //Part1
         partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(31, 3, 0), bulletAppState, assetManager).model);
         // erster Gegner
@@ -145,10 +159,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         
         this.game.attachState(partZero);
         rootNode.attachChild(partZero.rootNode);
-         }
+    }
 
-    
-    
     private void loadPartOne() {
         //Part 4
         partOne = new LevelState();
@@ -219,19 +231,17 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(58, 64, 0), bulletAppState, assetManager).model);
         partOne.rootNode.attachChild(ItemFactory.createDeathStar(new Vector3f(68, 64, 0), bulletAppState, assetManager).model);
-        
+
         // mit Todesstern und fünftem Gegner
         partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(80, 64, 0), bulletAppState, assetManager).model);
         // sechster Gegner
         lastCloudOne = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 68, 0), bulletAppState, assetManager);
         rootNode.attachChild(lastCloudOne.model);
-        
+
         this.game.attachState(partOne);
         rootNode.attachChild(partOne.rootNode);
     }
 
-
-    
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -281,7 +291,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     private void initKeys() {
         game.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_LEFT));
         game.getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_RIGHT));
@@ -316,23 +326,22 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
             }
         }
     };
-    
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("RangeAttack") && keyPressed) {
                 game.attachState(player.handleRangedAttack());
             }
-            
+
             if (name.equals("MeleeAttack") && keyPressed) {
             }
-            
+
             if (name.equals("Escape") && keyPressed) {
             }
         }
     };
-    
+
     @Override
-    public void update(float tpf){
+    public void update(float tpf) {
         player.handleMovement(tpf, game);
 		
 		// check for death
@@ -362,19 +371,19 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         Material mat_tt = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat_tt.setTexture("ColorMap", assetManager.loadTexture("Textures/Ambient_Sky_Clouds_UVLayout.png"));
         mat_tt.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-        ambient_clouds.setLocalTranslation(ambient_clouds.getLocalTranslation().x, ambient_clouds.getLocalTranslation().y, (float)(ambient_clouds.getLocalTranslation().z - 40.0f));
+        ambient_clouds.setLocalTranslation(ambient_clouds.getLocalTranslation().x, ambient_clouds.getLocalTranslation().y, (float) (ambient_clouds.getLocalTranslation().z - 40.0f));
         mat_tt.setTransparent(true);
-      
+
         ambient_clouds.setMaterial(mat_tt);
-       
+
         ambient_clouds.setQueueBucket(Bucket.Transparent);
         DirectionalLight sun = new DirectionalLight();
         sun.setColor(ColorRGBA.White);
         sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
-        
+
         rootNode.addLight(sun);
         rootNode.attachChild(skyBox);
         rootNode.attachChild(ambient_clouds);
-    
+
     }
 }

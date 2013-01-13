@@ -34,7 +34,7 @@ public class CharacterFactory {
         player.model.scale(0.3f);
         player.model.setLocalTranslation(0.f, 15.f, 0);
         
-        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1f, 2f, 0.5f));
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 0.5f));
         GhostControl control = new GhostControl(collisionShape);
         player.control = control;
         player.model.addControl(control);
@@ -68,19 +68,14 @@ public class CharacterFactory {
         return player;
     }
 
-    public static Opponent createOpponent(String type, AssetManager assetManager, Vector3f location, BulletAppState bulletAppState) {
+    public static Opponent createOpponent(String name, AssetManager assetManager, Vector3f location, BulletAppState bulletAppState) {
         //TODO: attack
         Opponent op = null;
-        op = new Opponent(type, 1);
-
-        if (type.equals("Unicorn")) {
-            op.adjustHealth(8);
-        }
+        op = new Opponent(name, 1);
 
         Node model = (Node) assetManager.loadModel("Models/Character/pixyJoinedclothes.j3o");
         model.scale(1.f);
-        
-        //model.setLocalTranslation(5, 5, 0);
+        model.setName(name);
         op.model = model;
         
         BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1, 1, 1));
@@ -88,12 +83,6 @@ public class CharacterFactory {
         model.addControl(control);
         bulletAppState.getPhysicsSpace().add(control);
         control.setPhysicsLocation(new Vector3f(10,5,0));
-              
-        //CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
-        //CharacterControl control = new CharacterControl(capsuleShape, 0.01f);
-        //model.addControl(control);
-
-        //control.setPhysicsLocation(location);
 
         
         //op.character = control;

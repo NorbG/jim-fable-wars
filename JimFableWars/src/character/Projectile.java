@@ -8,17 +8,13 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Line;
 import java.util.List;
 import mygame.Game;
 
@@ -62,10 +58,6 @@ public class Projectile extends AbstractAppState {
         emitter.getParticleInfluencer().setVelocityVariation(0.3f);
         emitter.setLocalTranslation(this.position);
 
-        //BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1, 1, 1));
-        //RigidBodyControl control = new RigidBodyControl(collisionShape);
-        //emitter.addControl(control);
-
         game.getRootNode().attachChild(emitter);
     }
 
@@ -81,11 +73,11 @@ public class Projectile extends AbstractAppState {
         List<PhysicsRayTestResult> physRayResults = game.getBulletAppState().getPhysicsSpace().rayTest(start, end);
 
         // draw helper line
-        Geometry g = new Geometry("line2", new Line(start, end));
+        /*Geometry g = new Geometry("line2", new Line(start, end));
         Material m = new Material(game.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         g.setMaterial(m);
         game.getRootNode().detachChildNamed("line2");
-        game.getRootNode().attachChild(g);
+        game.getRootNode().attachChild(g);*/
 
         // if test failed -> player is falling because he is not above ground
         if (physRayResults.isEmpty()) {
@@ -98,6 +90,9 @@ public class Projectile extends AbstractAppState {
                 hitNode.getControl(RigidBodyControl.class)
                         .setPhysicsLocation(position.add(new Vector3f(0, 5, 0)));
                 hitNode.getParent().getChildren().remove(hitNode);
+                
+                // remove fireball
+                emitter.getParent().getChildren().remove(emitter);
             }
         }
     }
