@@ -11,6 +11,8 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import mygame.Game;
@@ -39,7 +41,11 @@ public class CharacterFactory {
         player.control = control;
         player.model.addControl(control);
         
-        
+        Material mat_tt = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat_tt.setTexture("ColorMap", assetManager.loadTexture("Textures/dragon_texture.png"));
+        mat_tt.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+
+        player.model.setMaterial(mat_tt);
         
         //load the model and the rigid body animation
         // Node character = (Node) assetManager.loadModel("Models/" + type + ".mesh.xml");

@@ -30,6 +30,9 @@ import java.util.List;
 import character.Opponent;
 import character.Projectile;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -68,6 +71,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         loadPartZero();
         loadPartOne();
         loadAmbient();
+        loadCloudEffect();
 
         // TODO create enemy
         /*Opponent enemy = CharacterFactory.createOpponent("Enemy",
@@ -431,5 +435,38 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     
     public void killOpponent(String name) {
         opponents.remove(getOpponent(name));
+    }
+    
+    public void loadCloudEffect() {
+        List<Spatial> children = partZero.rootNode.getChildren();
+        children.addAll(partOne.rootNode.getChildren());
+        for (Spatial child : children) {
+            if (child.getName().equals("Cloud")) {
+                ParticleEmitter cloud_emitter =
+                        new ParticleEmitter("cloud_emitter", ParticleMesh.Type.Triangle, 5);
+                Material mat_fog = new Material(assetManager,
+                        "Common/MatDefs/Misc/Particle.j3md");
+                mat_fog.setTexture("Texture", assetManager.loadTexture(
+                        "Textures/cloud_particleEffect.png"));
+
+                cloud_emitter.setMaterial(mat_fog);
+                cloud_emitter.setImagesX(1);
+                cloud_emitter.setImagesY(3);
+                cloud_emitter.setEndColor(new ColorRGBA(ColorRGBA.LightGray));
+                cloud_emitter.setStartColor(new ColorRGBA(ColorRGBA.LightGray));
+                cloud_emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 0, 0.1f));
+                cloud_emitter.setStartSize(1.5f);
+                cloud_emitter.setEndSize(0.0f);
+                cloud_emitter.setGravity(0, 0, 0);
+                cloud_emitter.setLowLife(5f);
+                cloud_emitter.setHighLife(8f);
+
+                //Effekt vor die Wolke setzen
+                Vector3f cloudTranslation = (child.getLocalTranslation());
+                cloud_emitter.setLocalTranslation(cloudTranslation.x, cloudTranslation.y, cloudTranslation.z + 2.0f);
+
+                rootNode.attachChild(cloud_emitter);
+            }
+        }
     }
 }
