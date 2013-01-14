@@ -67,7 +67,6 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         this.rootNode = game.getRootNode();
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
         bulletAppState.getPhysicsSpace().add(player.control);
-        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         initKeys();
         loadPartZero();
