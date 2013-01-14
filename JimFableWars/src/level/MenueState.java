@@ -5,6 +5,7 @@
 package level;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.audio.AudioNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -22,7 +23,7 @@ import mygame.Game;
  */
 public class MenueState extends AbstractAppState {
 
-    private String character = "";
+    private AudioNode background = null;
     
     private Game game;
     private Nifty nifty;
@@ -44,7 +45,9 @@ public class MenueState extends AbstractAppState {
 
     public MenueState(Game app) {
         this.game = app;
-
+        background =  new AudioNode(game.getAssetManager(), "Sounds/Menue/Menue.wav");
+        background.setLooping(true);
+        background.play();
         // create nifty
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
                 app.getAssetManager(), app.getInputManager(), app.getAudioRenderer(), app.getGuiViewPort());
@@ -173,6 +176,7 @@ public class MenueState extends AbstractAppState {
             if (name.equals("Enter") && keyPressed) {
                 if (currentSelection == MainMenuSelection.START_GAME) {
                     // TODO: START LEVEL
+                    background.stop();
                     game.loadHeaven();
                     setScreen(Screen.HUD);
                     game.getInputManager().removeListener(actionListener);

@@ -6,6 +6,7 @@ package character;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -47,7 +48,11 @@ public class CharacterFactory {
         mat_tt.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 
         player.model.setMaterial(mat_tt);
-
+               
+        player.attack = new AudioNode(assetManager, "Sounds/Dragon/attack.wav");
+        player.on_death = new AudioNode(assetManager, "Sounds/Dragon/on_death.wav");
+        player.on_hit = new AudioNode(assetManager, "Sounds/Dragon/on_hit.wav");
+        player.walk = new AudioNode(assetManager, "Sounds/Dragon/walk.wav");
 
 
 
@@ -78,6 +83,8 @@ public class CharacterFactory {
         bulletAppState.getPhysicsSpace().add(control);
         control.setPhysicsLocation(new Vector3f(10,5,0));
 
+        op.attack = new AudioNode(assetManager, "Sounds/Fairy/attack.wav");
+        op.walk = new AudioNode(assetManager, "Sounds/Fairy/walk.wav");
         
         //op.character = control;
         //op.standAnimation = "stand";

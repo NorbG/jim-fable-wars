@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import character.Opponent;
 import character.Projectile;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -52,6 +53,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     private List<Cloud> moveClouds = new ArrayList<Cloud>();
     
     boolean complete = false;
+    protected AudioNode background = null;
 
     public Heaven() {
         super();
@@ -67,12 +69,16 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         this.rootNode = game.getRootNode();
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
         bulletAppState.getPhysicsSpace().add(player.control);
+        
+        this.background = new AudioNode(assetManager, "Sounds/Heaven/Heaven.wav");
+        this.background.setLooping(true);
 
         initKeys();
         loadPartZero();
         loadPartOne();
         loadAmbient();
         loadCloudEffect();
+        this.background.play();
 
         // TODO create enemy
         /*Opponent enemy = CharacterFactory.createOpponent("Enemy",
@@ -367,12 +373,23 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("RangeAttack") && keyPressed) {
                 game.attachState(player.handleRangedAttack());
+                if(player.attack != null){
+                    player.attack.setLooping(false);
+                    player.attack.play();
+                }
             }
 
             if (name.equals("MeleeAttack") && keyPressed) {
+              if(player.attack != null){
+                    player.attack.setLooping(false);
+                    player.attack.play();
+                }
             }
 
             if (name.equals("Escape") && keyPressed) {
+                if(background != null){
+                background.stop();
+                }
             }
         }
     };
@@ -447,6 +464,8 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     }
 
     private void resetGame() {
+        if(background != null)
+           background.stop();
         game.detachState(partZero);
         game.detachState(partOne);
         // clear all lists
