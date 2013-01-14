@@ -246,6 +246,14 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         lastCloudOne.model.setName("Last Cloud");
         rootNode.attachChild(lastCloudOne.model);
         
+        Node pillar1 = (Node) assetManager.loadModel("Models/Ambient/Heaven/Ambient_Pillar.j3o");
+        pillar1.setLocalTranslation(75, 64, -2);
+        partOne.rootNode.attachChild(pillar1);
+        
+        Node pillar2 = (Node) assetManager.loadModel("Models/Ambient/Heaven/Ambient_Pillar.j3o");
+        pillar2.setLocalTranslation(83, 64, -2);
+        partOne.rootNode.attachChild(pillar2);
+        
         Node chest = (Node) assetManager.loadModel("Models/Ambient/Heaven/chest.j3o");
         chest.setLocalTranslation(91, 68, 0);
         partOne.rootNode.attachChild(chest);
