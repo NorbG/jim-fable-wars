@@ -242,9 +242,13 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         // mit Todesstern und fünftem Gegner
         partOne.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_Long_1v1, new Vector3f(80, 64, 0), bulletAppState, assetManager).model);
         // sechster Gegner
-        lastCloudOne = ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(90, 68, 0), bulletAppState, assetManager);
+        lastCloudOne = ItemFactory.createCloud(Constants.CLOUD_MEDIUM_1v1, new Vector3f(90, 68, 0), bulletAppState, assetManager);
         lastCloudOne.model.setName("Last Cloud");
         rootNode.attachChild(lastCloudOne.model);
+        
+        Node chest = (Node) assetManager.loadModel("Models/Ambient/Heaven/chest.j3o");
+        chest.setLocalTranslation(91, 68, 0);
+        partOne.rootNode.attachChild(chest);
 
         this.game.attachState(partOne);
         rootNode.attachChild(partOne.rootNode);
