@@ -36,7 +36,7 @@ public class CharacterFactory {
         player.model = (Node) assetManager.loadModel("Models/Character/dragon.j3o");
         player.model.setName("Player");
         player.model.scale(0.3f);
-        player.model.setLocalTranslation(0.f, 20.f, 0);
+        player.model.setLocalTranslation(0.f, 50.f, 0);
         
         BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1f, 1.5f, 0.5f));
         GhostControl control = new GhostControl(collisionShape);

@@ -33,6 +33,7 @@ import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
+import com.jme3.light.AmbientLight;
 import com.jme3.scene.Spatial;
 
 /**
@@ -447,17 +448,23 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         Material mat_tt = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat_tt.setTexture("ColorMap", assetManager.loadTexture("Textures/Ambient_Sky_Clouds_UVLayout.png"));
         mat_tt.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-        ambient_clouds.setLocalTranslation(ambient_clouds.getLocalTranslation().x, ambient_clouds.getLocalTranslation().y, (float) (ambient_clouds.getLocalTranslation().z - 40.0f));
+        ambient_clouds.setLocalTranslation(ambient_clouds.getLocalTranslation().x + 90, ambient_clouds.getLocalTranslation().y, (float) (ambient_clouds.getLocalTranslation().z - 50.0f));
         mat_tt.setTransparent(true);
 
         ambient_clouds.setMaterial(mat_tt);
 
         ambient_clouds.setQueueBucket(Bucket.Transparent);
+        
         DirectionalLight sun = new DirectionalLight();
-        sun.setColor(ColorRGBA.White);
-        sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
+        sun.setColor(ColorRGBA.White.mult(0.7f));
+        sun.setDirection(new Vector3f(-.3f, -.6f, -.6f).normalizeLocal());
+        
+        AmbientLight ambientLight = new AmbientLight();
+        ambientLight.setColor(ColorRGBA.White.mult(0.5f));
+        rootNode.addLight(ambientLight);
 
         rootNode.addLight(sun);
+        rootNode.addLight(ambientLight);
         rootNode.attachChild(skyBox);
         rootNode.attachChild(ambient_clouds);
 
@@ -494,7 +501,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         for (Spatial child : children) {
             if (child.getName().equals("Cloud")) {
                 ParticleEmitter cloud_emitter =
-                        new ParticleEmitter("cloud_emitter", ParticleMesh.Type.Triangle, 5);
+                        new ParticleEmitter("cloud_emitter", ParticleMesh.Type.Triangle, 10);
                 Material mat_fog = new Material(assetManager,
                         "Common/MatDefs/Misc/Particle.j3md");
                 mat_fog.setTexture("Texture", assetManager.loadTexture(
@@ -506,15 +513,16 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
                 cloud_emitter.setEndColor(new ColorRGBA(ColorRGBA.LightGray));
                 cloud_emitter.setStartColor(new ColorRGBA(ColorRGBA.LightGray));
                 cloud_emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 0, 0.1f));
-                cloud_emitter.setStartSize(1.5f);
-                cloud_emitter.setEndSize(0.0f);
+                cloud_emitter.getParticleInfluencer().setVelocityVariation(0.2f);
+                cloud_emitter.setStartSize(2f);
+                cloud_emitter.setEndSize(1.0f);
                 cloud_emitter.setGravity(0, 0, 0);
                 cloud_emitter.setLowLife(5f);
                 cloud_emitter.setHighLife(8f);
 
                 //Effekt vor die Wolke setzen
                 Vector3f cloudTranslation = (child.getLocalTranslation());
-                cloud_emitter.setLocalTranslation(cloudTranslation.x, cloudTranslation.y, cloudTranslation.z + 2.0f);
+                cloud_emitter.setLocalTranslation(cloudTranslation.x, cloudTranslation.y, cloudTranslation.z + 1.0f);
 
                 rootNode.attachChild(cloud_emitter);
             }
