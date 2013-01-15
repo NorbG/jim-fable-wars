@@ -8,6 +8,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Node;
 
 /**
@@ -21,7 +22,7 @@ public class Character {
     protected int health;
     private String name;
     private int directAttackPoints;
-    public CharacterControl character = null;
+    public RigidBodyControl character = null;
     public Node model;
     public String jumpAnimation = "";
     public String walkAnimation = "";

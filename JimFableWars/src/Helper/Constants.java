@@ -13,5 +13,6 @@ public class Constants {
     public final static int CLOUD_SMALL_1v2 = 0;
     public final static int CLOUD_MEDIUM_1v1 = 1;
     public final static int CLOUD_Long_1v1 = 2;
+    public final static String FAIRY = "Fairy";
     
 }

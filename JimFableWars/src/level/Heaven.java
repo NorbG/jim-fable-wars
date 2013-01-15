@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import character.Opponent;
 import character.Projectile;
+import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
@@ -69,7 +70,6 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         super.initialize(stateManager, app);
         this.rootNode = game.getRootNode();
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
-        bulletAppState.getPhysicsSpace().add(player.control);
         
         this.background = new AudioNode(assetManager, "Sounds/Heaven/Heaven.wav");
         this.background.setLooping(true);
@@ -81,7 +81,18 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         loadCloudEffect();
         this.background.play();
 
-        // TODO create enemy
+        getRootNode().attachChild(player.model);
+        Opponent enemy = CharacterFactory.createOpponent(Helper.Constants.FAIRY, this.game.getAssetManager(), new Vector3f(5, 10, 0));
+        opponents.add(enemy);
+        game.getRootNode().attachChild(enemy.model);
+       
+        player.character.setApplyPhysicsLocal(true);
+        player.character.setPhysicsLocation(new Vector3f(0, 2, 0));
+       // player.character.setFallSpeed(0f);
+        this.bulletAppState.getPhysicsSpace().add(player.character);
+        //this.bulletAppState.getPhysicsSpace().setGravity(new Vector3f(0, 10, 0));
+     //   System.out.println("");
+// TODO create enemy
         /*Opponent enemy = CharacterFactory.createOpponent("Enemy",
                 assetManager, new Vector3f(5, 10, 0), game.getBulletAppState());
         opponents.add(enemy);
@@ -106,8 +117,9 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         Cloud cloud = null;
         
        // part.setParent(this);
-        //Start
-        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(0, 0, 0), bulletAppState, assetManager).model);
+
+        partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(0, 0, -0.5f), bulletAppState, assetManager).model);
+      
         partZero.rootNode.attachChild(ItemFactory.createCloud(Constants.CLOUD_SMALL_1v2, new Vector3f(6, 0, 0), bulletAppState, assetManager).model);
 
         // fallende Wolken
@@ -276,7 +288,10 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-        if ( event.getNodeA().getName().equals("Player")
+       
+        
+        
+         if ( event.getNodeA().getName().equals("Player")
                 && event.getNodeB().getName().equals("DeathStar")) 
         {
             player.adjustHealth(-3);
@@ -326,15 +341,6 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         }
     }
 
-    @Override
-    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     private void initKeys() {
         game.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_LEFT));
@@ -352,21 +358,16 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
             // move left
             if (name.equals("Left")) {
                 player.currentDirection = Player.Direction.LEFT;
-                player.isMoving = true;
             }
 
             // move right
             if (name.equals("Right")) {
                 player.currentDirection = Player.Direction.RIGHT;
-                player.isMoving = true;
             }
 
             // jump
             if (name.equals("Jump")) {
-                if (player.currentJumpDelay >= player.JUMP_DELAY && player.canJump) {
-                    player.currentJumpDelay = 0;
-                    player.jumping = true;
-                }
+            player.currentDirectionUp = Player.Direction.UP;
             }
         }
     };
@@ -398,11 +399,10 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     @Override
     public void update(float tpf) {
         player.handleMovement(tpf, game);
-		
 	// check for death
         if (player.getPlayerLocation().y < LEVEL_BOTTOM || player.isDead())
         {
-            game.loadMenue();
+        //    game.loadMenue();
             //resetGame();
         }
 
@@ -485,9 +485,9 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         loadPartOne();
   
         rootNode.detachChildNamed("Player");           
-        bulletAppState.getPhysicsSpace().remove(player.control);
+        bulletAppState.getPhysicsSpace().remove(player.character);
         game.player = player = CharacterFactory.createPlayer("Dragon", assetManager);
-        bulletAppState.getPhysicsSpace().add(player.control);
+        bulletAppState.getPhysicsSpace().add(player.character);
         getRootNode().attachChild(player.model);
     }
     

@@ -8,7 +8,9 @@ import Helper.Constants;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -25,6 +27,9 @@ import com.jme3.scene.shape.Box;
 public class ItemFactory {
     
     private static int movableCloudIndex = 0;
+    private static Node modelCloudType1 = null;
+    private static Node modelCloudType2 = null;
+    private static Node modelCloudType3 = null;
     
     public static Item createPowerUp(String type, AssetManager assetManager,  BulletAppState appState, Vector3f location){
 
@@ -53,20 +58,33 @@ public class ItemFactory {
         switch(type)
         {
            case Constants.CLOUD_SMALL_1v2:
-                cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_small_1v2_low_poly.j3o");
-                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(1.7f, 0.5f, 1)), 0);
+               if(modelCloudType1 == null)
+                   cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_small_1v2_low_poly.j3o");
+               else
+                   cloud.model = modelCloudType1;
+                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(1.7f, 1.5f, 1.5f)));
                 break;
             case Constants.CLOUD_MEDIUM_1v1:
-                cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_medium_1v1_low_poly.j3o");
-                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(3.1f, 0.5f, 1)), 0);
+               if(modelCloudType2 == null)
+                    cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_medium_1v1_low_poly.j3o");
+               else
+                   cloud.model = modelCloudType2;
+                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(3.1f, 1.5f, 1.5f)));
                 
                 break;
             case Constants.CLOUD_Long_1v1:
-                cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_long_1v1_low_Poly.j3o");
-                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(7.2f, 0.5f, 1)), 0);
+                if(modelCloudType3 == null)
+                    cloud.model = (Node) assetManager.loadModel("Models/Level/Heaven/cloud_long_1v1_low_Poly.j3o");
+                else
+                   cloud.model = modelCloudType3;
+                cloudControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(7.2f, 1.5f, 1.5f)));
                 break;
         }
         
+        cloudControl.setMass(1f); 
+        cloudControl.setRestitution(0f);
+        cloudControl.setFriction(0f);
+        cloudControl.setKinematic(true);
         cloud.model.setLocalTranslation(location.x, location.y, 0);
         cloud.model.addControl(cloudControl);
         cloud.model.setName("Cloud");

@@ -38,14 +38,14 @@ public class Game extends SimpleApplication {
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
         player = CharacterFactory.createPlayer("Dragon", assetManager);
-        getRootNode().attachChild(player.model);
         loadMenue();
+                bulletAppState.getPhysicsSpace().enableDebug(assetManager);
     }
 
     public void loadHeaven() {
         //remove Hell or Menue first
         heaven = new Heaven();
-        heaven.initialize(stateManager, this);
+      //  heaven.initialize(stateManager, this);
         if (stateManager.hasState(menue)) {
             detachState(menue);
         }

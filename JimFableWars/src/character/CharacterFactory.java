@@ -15,6 +15,7 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import mygame.Game;
@@ -38,11 +39,13 @@ public class CharacterFactory {
         player.model.scale(0.3f);
         player.model.setLocalTranslation(0.f, 50.f, 0);
         
-        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1f, 1.5f, 0.5f));
-        GhostControl control = new GhostControl(collisionShape);
-        player.control = control;
-        player.model.addControl(control);
-        
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(0.5f, 0.5f, 0.5f));
+       // GhostControl control = new GhostControl(collisionShape);
+     //   control.addCollideWithGroup(Helper.Constants.CLOUDGROUP);
+        RigidBodyControl character = new RigidBodyControl(collisionShape, 1.3f);
+        character.setAngularDamping(100f);
+        player.character = character;
+        player.model.addControl(character);
         Material mat_tt = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat_tt.setTexture("ColorMap", assetManager.loadTexture("Textures/dragon_texture.png"));
         mat_tt.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
@@ -67,11 +70,12 @@ public class CharacterFactory {
         return player;
     }
 
-    public static Opponent createOpponent(String name, AssetManager assetManager, Vector3f location, BulletAppState bulletAppState) {
+    public static Opponent createOpponent(String name, AssetManager assetManager, Vector3f location) {
         //TODO: attack
         Opponent op = null;
         op = new Opponent(name, 1);
 
+        if(name.equals(Helper.Constants.FAIRY)){
         Node model = (Node) assetManager.loadModel("Models/Character/pixyJoinedclothes.j3o");
         model.scale(1.f);
         model.setName(name);
@@ -80,12 +84,12 @@ public class CharacterFactory {
         BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1, 1, 1));
         RigidBodyControl control = new RigidBodyControl(collisionShape, 0);
         model.addControl(control);
-        bulletAppState.getPhysicsSpace().add(control);
         control.setPhysicsLocation(new Vector3f(10,5,0));
 
-        op.attack = new AudioNode(assetManager, "Sounds/Fairy/attack.wav");
-        op.walk = new AudioNode(assetManager, "Sounds/Fairy/walk.wav");
-        
+       //
+        op.attack = new AudioNode(assetManager, "Sounds/Opponents/Fairy/attack.wav");
+        op.walk = new AudioNode(assetManager, "Sounds/Opponents/Fairy/walk.wav");
+        }
         //op.character = control;
         //op.standAnimation = "stand";
         //op.walkAnimation = "Walk";

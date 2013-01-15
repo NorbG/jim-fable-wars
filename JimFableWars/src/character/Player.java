@@ -18,6 +18,7 @@ import mygame.Game;
  * @author Lena
  */
 public class Player extends Character {
+    private float JUMP_HEIGHT = 14;
 
     public static enum State {
 
@@ -26,26 +27,18 @@ public class Player extends Character {
     
     public static enum Direction {
 
-        LEFT, RIGHT
+        LEFT, RIGHT, UP, NONE
     };
     
     private State state = State.DEFAULT;
     private int distanceAttack;
     public String distanceAttackAnimation;
     
-    private final int HORIZONTAL_SPEED = 7;     // the movement speed to the left and right
-    public final float JUMP_DELAY = 1.f;       // the interval between jumps (seconds)
-    private final float JUMP_DURATION = 0.5f;   // how long is the player jumping (seconds)?
-    private final float JUMP_SPEED = 20;        // the upwards speed when jumping
-    private final float GRAVITY = -10.f;        // the downwards speed when falling
+    private final float HORIZONTAL_SPEED = 4f;     // the movement speed to the left and right
     //public boolean moveLeft = false;           // currently moving left?
     //public boolean moveRight = false;          // currently moving right?
-    public float currentJumpDelay = 0;         // seconds since last jump
-    public boolean jumping = false;            // is currently jumping?
-    public boolean canJump = false;            // can currently jump (cannot when falling e.g.)
-    public Direction currentDirection = Direction.RIGHT;
-    public boolean isMoving = false;
-    public GhostControl control;
+    public Direction currentDirection = Direction.NONE;
+    public Direction currentDirectionUp = Direction.NONE;
 
     public Player(String name, int distanceAttack, int directAttack) {
         super(name, directAttack);
@@ -67,58 +60,24 @@ public class Player extends Character {
 
     public void handleMovement(float tpf, Game app) {
         // move player left or right if necessary
-        if (currentDirection == Direction.LEFT && isMoving) {
-            model.move(-HORIZONTAL_SPEED * tpf, 0, 0);
+         Vector3f tmp = character.getPhysicsLocation();
+        if (currentDirection == Direction.LEFT) {
+           tmp.x -=HORIZONTAL_SPEED * tpf;
+           currentDirection = Direction.NONE;
         }
 
-        if (currentDirection == Direction.RIGHT && isMoving) {
-            model.move(HORIZONTAL_SPEED * tpf, 0, 0);
-        }
-        
-        isMoving = false;
-
-        // count seconds since last jump
-        if (currentJumpDelay < JUMP_DELAY) {
-            currentJumpDelay += tpf;
-        }
-
-        // if jumping duration is over, disable jump
-        if (currentJumpDelay > JUMP_DURATION) {
-            jumping = false;
-        }
-
-        // if currently jumping, move the player upwards
-        if (jumping) {
-            model.move(0, tpf * JUMP_SPEED, 0);
-        }
-
-        // test if player is above ground
-        Vector3f start = getPlayerLocation();
-        Vector3f end = getPlayerLocation().add(new Vector3f(0, -1.5f, 0));
-        List<PhysicsRayTestResult> physRayResults = app.getBulletAppState().getPhysicsSpace().rayTest(start, end);
-
-        // draw helper line
-        /*Geometry g = new Geometry("line", new Line(start, end));
-        Material m = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        g.setMaterial(m);
-        app.getRootNode().detachChildNamed("line");
-        app.getRootNode().attachChild(g);*/
-
-        // if test failed -> player is falling because he is not above ground
-        if (physRayResults.isEmpty()) {
-            model.move(0, tpf * GRAVITY, 0);
-            canJump = false;    // player can't jump while falling
-        } else {
-            canJump = true;
+        if (currentDirection == Direction.RIGHT ) {
+             tmp.x +=HORIZONTAL_SPEED * tpf;
+             currentDirection = Direction.NONE;
         }
         
-        //test if player above a upwarts movable cloud 
-        end = getPlayerLocation().add(new Vector3f(0, -1.3f, 0));
-        physRayResults = app.getBulletAppState().getPhysicsSpace().rayTest(start, end);
-        if(!physRayResults.isEmpty())
-        {
-            model.move(0, tpf * 3f, 0);
+        if (currentDirectionUp == Direction.UP) {
+             tmp.y += JUMP_HEIGHT * tpf;
+             currentDirectionUp = Direction.NONE;
         }
+        
+     tmp.z = 0f;
+     character.setPhysicsLocation(tmp);
     }
 
     public Projectile handleRangedAttack() {
