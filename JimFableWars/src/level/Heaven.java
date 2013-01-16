@@ -36,6 +36,9 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.light.AmbientLight;
 import com.jme3.scene.Spatial;
+import com.jme3.ui.Picture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -89,7 +92,7 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         game.getRootNode().attachChild(enemy.model);
        
         player.character.setApplyPhysicsLocal(true);
-        player.character.setPhysicsLocation(new Vector3f(0, 2, 0));
+        player.character.setPhysicsLocation(new Vector3f(80, 90, 0));
        // player.character.setFallSpeed(0f);
         this.bulletAppState.getPhysicsSpace().add(player.character);
         //this.bulletAppState.getPhysicsSpace().setGravity(new Vector3f(0, 10, 0));
@@ -329,7 +332,12 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
             if(!complete)
             {
                 complete = true;
-                game.loadMenue();
+            Picture pic = new Picture("HUD Picture");
+            pic.setImage(assetManager, "Interface/Won.png", true);
+            pic.setWidth(game.getSettings().getWidth()/2);
+            pic.setHeight(game.getSettings().getHeight()/2);
+            pic.setPosition(game.getSettings().getWidth()/4, game.getSettings().getHeight()/4);
+            //game.loadMenue();
             }
             
         }
@@ -338,7 +346,12 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
           if(!complete)
             {
                 complete = true;
-                game.loadMenue();
+            Picture pic = new Picture("HUD Picture");
+            pic.setImage(assetManager, "Interface/Won.png", true);
+            pic.setWidth(game.getSettings().getWidth()/2);
+            pic.setHeight(game.getSettings().getHeight()/2);
+            pic.setPosition(game.getSettings().getWidth()/4, game.getSettings().getHeight()/4);
+             //   game.loadMenue();
             }
         }
     }
@@ -404,8 +417,14 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
 	// check for death
         if (player.getPlayerLocation().y < LEVEL_BOTTOM || player.isDead())
         {
-        //    game.loadMenue();
-            //resetGame();
+            Picture pic = new Picture("HUD Picture");
+            pic.setImage(assetManager, "Interface/GameOver.png", true);
+            pic.setWidth(game.getSettings().getWidth()/2);
+            pic.setHeight(game.getSettings().getHeight()/2);
+            pic.setPosition(game.getSettings().getWidth()/4, game.getSettings().getHeight()/4);
+            game.getGUINode().attachChild(pic);
+            //game.loadMenue();
+           // resetGame();
         }
 
         //move clouds
@@ -473,6 +492,11 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
     }
 
     private void resetGame() {
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Heaven.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(background != null)
            background.stop();
         game.detachState(partZero);

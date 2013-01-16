@@ -7,7 +7,10 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.system.AppSettings;
 import level.Heaven;
+import level.MenueState.Screen;
 
 /**
  * test
@@ -29,6 +32,14 @@ public class Game extends SimpleApplication {
         app.setDisplayStatView(false);
         app.start();
     }
+    
+    public Node getGUINode(){
+        return this.guiNode;
+    }
+    
+        public AppSettings getSettings(){
+        return this.settings;
+    }
 
     @Override
     public void simpleInitApp() {
@@ -43,14 +54,14 @@ public class Game extends SimpleApplication {
     }
 
     public void loadHeaven() {
-        //remove Hell or Menue first
-        heaven = new Heaven();
       //  heaven.initialize(stateManager, this);
         if (stateManager.hasState(menue)) {
             detachState(menue);
+            menue.setScreen(Screen.HUD);
         }
+        //remove Hell or Menue first
+        heaven = new Heaven();
         attachState(heaven);
-
         camera = new mygame.Camera();
         stateManager.attach(camera);
     }

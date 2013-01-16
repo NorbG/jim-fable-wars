@@ -178,7 +178,6 @@ public class MenueState extends AbstractAppState {
                     // TODO: START LEVEL
                     background.stop();
                     game.loadHeaven();
-                    setScreen(Screen.HUD);
                     game.getInputManager().removeListener(actionListener);
                 } else {
                     game.stop();
