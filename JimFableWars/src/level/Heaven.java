@@ -82,7 +82,9 @@ public class Heaven extends LevelState implements ActionListener, PhysicsCollisi
         this.background.play();
 
         getRootNode().attachChild(player.model);
-        Opponent enemy = CharacterFactory.createOpponent(Helper.Constants.FAIRY, this.game.getAssetManager(), new Vector3f(5, 10, 0));
+        Opponent enemy = CharacterFactory.createOpponent(Helper.Constants.FAIRY, this.game.getAssetManager());
+        enemy.character.setApplyPhysicsLocal(true);
+        enemy.character.setPhysicsLocation(new Vector3f(10, 5, 0));
         opponents.add(enemy);
         game.getRootNode().attachChild(enemy.model);
        

@@ -36,10 +36,10 @@ public class CharacterFactory {
         
         player.model = (Node) assetManager.loadModel("Models/Character/dragon.j3o");
         player.model.setName("Player");
-        player.model.scale(0.3f);
+        player.model.scale(0.6f);
         player.model.setLocalTranslation(0.f, 50.f, 0);
         
-        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(0.5f, 0.5f, 0.5f));
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(0.5f, 0.7f, 0.5f));
        // GhostControl control = new GhostControl(collisionShape);
      //   control.addCollideWithGroup(Helper.Constants.CLOUDGROUP);
         RigidBodyControl character = new RigidBodyControl(collisionShape, 1.3f);
@@ -70,27 +70,49 @@ public class CharacterFactory {
         return player;
     }
 
-    public static Opponent createOpponent(String name, AssetManager assetManager, Vector3f location) {
+    public static Opponent createOpponent(String name, AssetManager assetManager) {
         //TODO: attack
         Opponent op = null;
         op = new Opponent(name, 1);
+        Node model = null;
+        RigidBodyControl control = null;
 
         if(name.equals(Helper.Constants.FAIRY)){
-        Node model = (Node) assetManager.loadModel("Models/Character/pixyJoinedclothes.j3o");
-        model.scale(1.f);
+        model = (Node) assetManager.loadModel("Models/Character/pixyJoinedclothes.j3o");
+        model.scale(0.7f);
         model.setName(name);
-        op.model = model;
         
-        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(1, 1, 1));
-        RigidBodyControl control = new RigidBodyControl(collisionShape, 0);
-        model.addControl(control);
-        control.setPhysicsLocation(new Vector3f(10,5,0));
+        
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(0.7f, 1f, 0.4f));
+        control = new RigidBodyControl(collisionShape, 1);
+        
 
        //
         op.attack = new AudioNode(assetManager, "Sounds/Opponents/Fairy/attack.wav");
         op.walk = new AudioNode(assetManager, "Sounds/Opponents/Fairy/walk.wav");
         }
-        //op.character = control;
+        else if(name.equals(Helper.Constants.UNICORN)){
+        model = (Node) assetManager.loadModel("Models/Character/unicorn.j3o");
+        model.scale(0.6f);
+        model.setName(name);
+        
+        
+        BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(0.7f, 1f, 0.4f));
+        control = new RigidBodyControl(collisionShape, 1);
+
+       //
+        op.attack = new AudioNode(assetManager, "Sounds/Opponents/Unicorn/attack.wav");
+        op.walk = new AudioNode(assetManager, "Sounds/Opponents/Unicorn/walk.wav");
+        op.on_death = new AudioNode(assetManager, "Sounds/Opponents/Unicorn/on_death.wav");
+        op.on_hit = new AudioNode(assetManager, "Sounds/Opponents/Unicorn/on_hit.wav");
+        }
+        
+        control.setAngularDamping(100f);
+        control.setApplyPhysicsLocal(true);
+        model.addControl(control);
+        op.character = control;
+        op.model = model;
+        //character = control;
         //op.standAnimation = "stand";
         //op.walkAnimation = "Walk";
         //set the animations

@@ -51,7 +51,7 @@ public class Game extends SimpleApplication {
         }
         attachState(heaven);
 
-        camera = new Camera();
+        camera = new mygame.Camera();
         stateManager.attach(camera);
     }
 
